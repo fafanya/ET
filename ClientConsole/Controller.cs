@@ -77,5 +77,10 @@ namespace ClientConsole
                 Console.WriteLine("Не верно");
             }
         }
+
+        private static void RunTranslateSubTask()
+        {
+
+        }
     }
 }
