@@ -10,7 +10,9 @@ namespace ClientConsole
     {
         public static void RunTest()
         {
-            Console.WriteLine("Тест начат.");
+            Console.WriteLine();
+            Console.WriteLine("*******   Тест начат   *******");
+            Console.WriteLine();
 
             Test test = TestCreator.Create();
             foreach(Task task in test.TaskList)
@@ -29,23 +31,35 @@ namespace ClientConsole
                 }
             }
 
-            Console.WriteLine("Тест завершён.");
+            Console.WriteLine();
+            Console.WriteLine("*******   Тест завершён   *******");
         }
 
         public static void RunMakeTenceTask(Task task)
         {
-            Console.WriteLine("Задание начато.");
-            Console.Write("Дано:");
-            Console.WriteLine(task.NativeLangText);
-            RunSelectSubTask(typeof(Tense.Time), "Выберите время:", task.TenseTime);
-            RunSelectSubTask(typeof(Tense.Type), "Выберите тип:", task.TenseType);
+            Console.WriteLine("-------   Задание " + task.SeqNo + "   -------");
+            Console.WriteLine();
 
-            Console.WriteLine("Задание окончено.");
+            Console.WriteLine("Дано предложение:");
+            Console.WriteLine(task.NativeLangText);
+            Console.WriteLine();
+
+            RunSelectSubTask(typeof(Tense.Time), "время", task.TenseTime);
+            Console.WriteLine();
+
+            RunSelectSubTask(typeof(Tense.Type), "тип времени", task.TenseType);
+            Console.WriteLine();
+
+            RunTranslateSubTask(task);
+            Console.WriteLine();
+
+            Console.WriteLine("-------   Задание окончено   -------");
+            Console.WriteLine("------------------------------------");
         }
 
         private static void RunSelectSubTask(Type t, string header, object correctValue)
         {
-            Console.WriteLine(header);
+            Console.WriteLine("Выберите "+ header + ":");
             var v = (int[])(Enum.GetValues(t));
             for (int i = 1; i <= v.Length; i++)
             {
@@ -55,6 +69,7 @@ namespace ClientConsole
             bool isValid = false;
             while (!isValid)
             {
+                Console.Write("Номер ответа: ");
                 string output = Console.ReadLine();
                 if (int.TryParse(output, out index))
                 {
@@ -68,7 +83,45 @@ namespace ClientConsole
             string correctAnswer = Enum.GetName(t, correctValue);
             string userAnsewer = Enum.GetName(t, index);
 
+            bool isCorrect = false;
             if (correctAnswer == userAnsewer)
+            {
+                isCorrect = true;
+            }
+
+            ShowResult(isCorrect);
+        }
+
+        private static void RunTranslateSubTask(Task task)
+        {
+            Console.WriteLine("Переведите предложение:");
+
+            string userAnswer = Console.ReadLine();
+            string tempUserAnswer = userAnswer.Replace(".", "");
+            tempUserAnswer = tempUserAnswer.Replace(" ", "");
+            tempUserAnswer = tempUserAnswer.Replace(",", "");
+
+            bool isCorrect = false;
+            foreach(var tr in task.Translations)
+            {
+                string tempTr = tr.Replace(".", "");
+                tempTr = tempTr.Replace(" ", "");
+                tempTr = tempTr.Replace(",", "");
+
+                if(tempUserAnswer == tempTr)
+                {
+                    isCorrect = true;
+                    break;
+                }
+            }
+
+            ShowResult(isCorrect);
+        }
+
+        private static void ShowResult(bool isCorrect)
+        {
+            Console.Write("Результат: ");
+            if (isCorrect)
             {
                 Console.WriteLine("Верно");
             }
@@ -76,11 +129,6 @@ namespace ClientConsole
             {
                 Console.WriteLine("Не верно");
             }
-        }
-
-        private static void RunTranslateSubTask()
-        {
-
         }
     }
 }

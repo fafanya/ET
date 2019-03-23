@@ -12,7 +12,7 @@ namespace ClientConsole
             while (toContinue)
             {
                 toContinue = RunMenu();
-                Console.WriteLine("-------------------------------------------");
+                Console.WriteLine("========================================");
             }
         }
 
@@ -25,6 +25,11 @@ namespace ClientConsole
             switch (option)
             {
                 case "t":
+                    {
+                        Controller.RunTest();
+                        return true;
+                    }
+                case "е":
                     {
                         Controller.RunTest();
                         return true;

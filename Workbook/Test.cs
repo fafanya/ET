@@ -6,6 +6,25 @@ namespace Workbook
 {
     public class Test
     {
-        public List<Task> TaskList { get; } = new List<Task>();
+        private List<Task> m_TaskList;
+
+        public IEnumerable<Task> TaskList
+        {
+            get
+            {
+                return m_TaskList;
+            }
+        }
+
+        public Test()
+        {
+            m_TaskList = new List<Task>();
+        }
+
+        public void AddTask(Task task)
+        {
+            m_TaskList.Add(task);
+            task.SeqNo = m_TaskList.Count;
+        }
     }
 }

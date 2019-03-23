@@ -11,17 +11,32 @@ namespace Workbook
         {
             Test test = new Test();
 
-            Task task = new Task();
-            task.NativeLangText = "Мой брат хорошо играет в футбол.";
-            task.Translations = new string[]
+            Task task = new Task
             {
-                "My brother plays football well",
-                "My brother plays good football"
+                NativeLangText = "Мой брат хорошо играет в футбол.",
+                Translations = new string[]
+                {
+                    "My brother plays football well",
+                    "My brother plays good football"
+                },
+                TenseTime = Tense.Time.Present,
+                TenseType = Tense.Type.Simple,
+                TaskType = TaskType.MakeTence
             };
-            task.TenseTime = Tense.Time.Present;
-            task.TenseType = Tense.Type.Simple;
-            task.TaskType = TaskType.MakeTence;
-            test.TaskList.Add(task);
+            test.AddTask(task);
+
+            task = new Task
+            {
+                NativeLangText = "Вчера в 9 вечера я выполнял домашнее задание.",
+                Translations = new string[]
+                {
+                    "Yesterday at 9 pm I was doing my homework.",
+                },
+                TenseTime = Tense.Time.Past,
+                TenseType = Tense.Type.Continuous,
+                TaskType = TaskType.MakeTence
+            };
+            test.AddTask(task);
 
             return test;
         }
