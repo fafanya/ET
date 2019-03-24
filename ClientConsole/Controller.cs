@@ -19,7 +19,7 @@ namespace ClientConsole
             {
                 switch (task.TaskType)
                 {
-                    case TaskType.MakeTence:
+                    case TaskType.MakeTense:
                         {
                             RunMakeTenceTask(task);
                             continue;
@@ -44,10 +44,10 @@ namespace ClientConsole
             Console.WriteLine(task.NativeLangText);
             Console.WriteLine();
 
-            RunSelectSubTask(typeof(Tense.Time), "время", task.TenseTime);
+            RunSelectSubTask(typeof(VerbTense), "время", task.VerbTense);
             Console.WriteLine();
 
-            RunSelectSubTask(typeof(Tense.Type), "тип времени", task.TenseType);
+            RunSelectSubTask(typeof(VerbAspect), "вид времени", task.VerbAspect);
             Console.WriteLine();
 
             RunTranslateSubTask(task);
@@ -102,7 +102,7 @@ namespace ClientConsole
             tempUserAnswer = tempUserAnswer.Replace(",", "");
 
             bool isCorrect = false;
-            foreach(var tr in task.Translations)
+            foreach(var tr in task.TranslationsList)
             {
                 string tempTr = tr.Replace(".", "");
                 tempTr = tempTr.Replace(" ", "");

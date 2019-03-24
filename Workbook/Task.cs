@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Linq;
+using System.Collections;
+using System.Collections.Generic;
 using Textbook;
 
 namespace Workbook
@@ -8,8 +11,10 @@ namespace Workbook
         public int SeqNo { get; set; }
         public TaskType TaskType { get; set; }
         public string NativeLangText { get; set; }
-        public Tense.Time TenseTime { get; set; }
-        public Tense.Type TenseType { get; set; }
-        public string[] Translations { get; set; }
+        public VerbTense VerbTense { get; set; }
+        public VerbAspect VerbAspect { get; set; }
+        public string[] TranslationsList { get; set; }
+        
+        public List<string[]> CompositionList { get; set; }
     }
 }

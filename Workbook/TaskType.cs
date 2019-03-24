@@ -6,6 +6,6 @@ namespace Workbook
 {
     public enum TaskType
     {
-        MakeTence = 1
+        MakeTense = 1
     }
 }

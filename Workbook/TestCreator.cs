@@ -14,27 +14,56 @@ namespace Workbook
             Task task = new Task
             {
                 NativeLangText = "Мой брат хорошо играет в футбол.",
-                Translations = new string[]
+                TranslationsList = new string[]
                 {
                     "My brother plays football well",
                     "My brother plays good football"
                 },
-                TenseTime = Tense.Time.Present,
-                TenseType = Tense.Type.Simple,
-                TaskType = TaskType.MakeTence
+                VerbTense = VerbTense.Present,
+                VerbAspect = VerbAspect.Simple,
+                TaskType = TaskType.MakeTense,
+                CompositionList = new List<string[]>
+                {
+                    new string[]
+                    {
+                        SentencePart.spAttribute,
+                        SentencePart.spSubject,
+                        SentencePart.spPredicate,
+                        SentencePart.spObject,
+                        SentencePart.spAdverbialModifier
+                    },
+                    new string[]
+                    {
+                        SentencePart.spAttribute,
+                        SentencePart.spSubject,
+                        SentencePart.spPredicate,
+                        SentencePart.spAttribute,
+                        SentencePart.spObject
+                    }
+                }
             };
             test.AddTask(task);
 
             task = new Task
             {
                 NativeLangText = "Вчера в 9 вечера я выполнял домашнее задание.",
-                Translations = new string[]
+                TranslationsList = new string[]
                 {
                     "Yesterday at 9 pm I was doing my homework.",
                 },
-                TenseTime = Tense.Time.Past,
-                TenseType = Tense.Type.Continuous,
-                TaskType = TaskType.MakeTence
+                VerbTense = VerbTense.Past,
+                VerbAspect = VerbAspect.Continuous,
+                TaskType = TaskType.MakeTense,
+                CompositionList = new List<string[]>
+                {
+                    new string[]
+                    {
+                        SentencePart.spAdverbialModifier,
+                        SentencePart.spSubject,
+                        SentencePart.spPredicate,
+                        SentencePart.spObject
+                    }
+                }
             };
             test.AddTask(task);
 
