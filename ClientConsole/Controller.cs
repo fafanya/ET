@@ -44,14 +44,17 @@ namespace ClientConsole
             Console.WriteLine(task.NativeLangText);
             Console.WriteLine();
 
-            RunSelectSubTask(typeof(VerbTense), "время", task.VerbTense);
+            /*RunSelectSubTask(typeof(VerbTense), "время", task.VerbTense);
             Console.WriteLine();
 
             RunSelectSubTask(typeof(VerbAspect), "вид времени", task.VerbAspect);
+            Console.WriteLine();*/
+
+            RunFormulaSubTask(task.FormulaList);
             Console.WriteLine();
 
-            RunTranslateSubTask(task);
-            Console.WriteLine();
+            /*RunTranslateSubTask(task);
+            Console.WriteLine();*/
 
             Console.WriteLine("-------   Задание окончено   -------");
             Console.WriteLine("------------------------------------");
@@ -116,6 +119,216 @@ namespace ClientConsole
             }
 
             ShowResult(isCorrect);
+        }
+
+        private static void RunFormulaSubTask(List<FormulaItem[]> formulaList)
+        {
+            if (formulaList == null ||
+                formulaList.Count == 0)
+                return;
+
+            List<string> curentFormula = new List<string>();
+
+            Console.WriteLine("Составьте формулу:");
+            bool isContinue = true;
+            while (isContinue)
+            {
+                Console.WriteLine("Текущая формула: " + GetFormula(curentFormula));
+                bool isValid = false;
+                string output = null;
+                while (!isValid)
+                {
+                    Console.Write("Введите [1] - добавить элемент, [2] - принять формулу:");
+                    output = Console.ReadLine();
+                    if (!string.IsNullOrWhiteSpace(output))
+                    {
+                        if (output == "1" || output == "2")
+                        {
+                            isValid = true;
+                        }
+                    }
+                }
+
+
+                if (!string.IsNullOrWhiteSpace(output))
+                {
+                    if (output == "1")
+                    {
+                        Console.WriteLine("Выберите часть предложения:");
+                        Console.WriteLine("1." + FormulaItem.Subject.FormulaItemTypeID);
+                        Console.WriteLine("2." + FormulaItem.ModalVerb.FormulaItemTypeID);
+                        Console.WriteLine("3." + FormulaItem.NotionalVerb.FormulaItemTypeID);
+                        Console.WriteLine("4." + FormulaItem.OtherPart.FormulaItemTypeID);
+
+                        bool isPartValid = false;
+                        string partOutput = null;
+                        while (!isPartValid)
+                        {
+                            Console.Write("Ваш вариант:");
+                            partOutput = Console.ReadLine();
+                            if (!string.IsNullOrWhiteSpace(partOutput))
+                            {
+                                if (partOutput == "1" || partOutput == "2" || partOutput == "3" || partOutput == "4")
+                                {
+                                    isPartValid = true;
+                                }
+                            }
+                        }
+
+                        if (partOutput == "1")
+                        {
+                            curentFormula.Add(FormulaItem.Subject.FormulaItemTypeID);
+                        }
+                        else if (partOutput == "2")
+                        {
+                            Console.WriteLine("Выберите модальный глагол:");
+                            Console.WriteLine("1." + ModalVerbFormulaItem.Do.ModalVerbFormulaItemID);
+                            Console.WriteLine("2." + ModalVerbFormulaItem.Was.ModalVerbFormulaItemID);
+                            Console.WriteLine("3." + ModalVerbFormulaItem.Were.ModalVerbFormulaItemID);
+                            Console.WriteLine("4." + ModalVerbFormulaItem.Been.ModalVerbFormulaItemID);
+
+                            bool isRPartValid = false;
+                            string partROutput = null;
+                            while (!isRPartValid)
+                            {
+                                Console.Write("Ваш вариант:");
+                                partROutput = Console.ReadLine();
+                                if (!string.IsNullOrWhiteSpace(partROutput))
+                                {
+                                    if (partROutput == "1" || partROutput == "2" || partROutput == "3" || partROutput == "4")
+                                    {
+                                        isRPartValid = true;
+                                    }
+                                }
+                            }
+
+                            if(partROutput == "1")
+                            {
+                                curentFormula.Add(ModalVerbFormulaItem.Do.ModalVerbFormulaItemID);
+                            }
+                            else if (partROutput == "2")
+                            {
+                                curentFormula.Add(ModalVerbFormulaItem.Was.ModalVerbFormulaItemID);
+                            }
+                            else if (partROutput == "3")
+                            {
+                                curentFormula.Add(ModalVerbFormulaItem.Were.ModalVerbFormulaItemID);
+                            }
+                            else if (partROutput == "4")
+                            {
+                                curentFormula.Add(ModalVerbFormulaItem.Been.ModalVerbFormulaItemID);
+                            }
+                        }
+                        else if (partOutput == "3")
+                        {
+                            Console.WriteLine("Выберите вид смыслового глагола:");
+                            Console.WriteLine("1." + NotionalVerbFormulaItem.V.NotionalVerbFormulaItemID);
+                            Console.WriteLine("2." + NotionalVerbFormulaItem.Ves.NotionalVerbFormulaItemID);
+                            Console.WriteLine("3." + NotionalVerbFormulaItem.Vs.NotionalVerbFormulaItemID);
+                            Console.WriteLine("4." + NotionalVerbFormulaItem.Ving.NotionalVerbFormulaItemID);
+
+                            bool isRPartValid = false;
+                            string partROutput = null;
+                            while (!isRPartValid)
+                            {
+                                Console.Write("Ваш вариант:");
+                                partROutput = Console.ReadLine();
+                                if (!string.IsNullOrWhiteSpace(partROutput))
+                                {
+                                    if (partROutput == "1" || partROutput == "2" || partROutput == "3" || partROutput == "4")
+                                    {
+                                        isRPartValid = true;
+                                    }
+                                }
+                            }
+
+                            if (partROutput == "1")
+                            {
+                                curentFormula.Add(NotionalVerbFormulaItem.V.NotionalVerbFormulaItemID);
+                            }
+                            else if (partROutput == "2")
+                            {
+                                curentFormula.Add(NotionalVerbFormulaItem.Ves.NotionalVerbFormulaItemID);
+                            }
+                            else if (partROutput == "3")
+                            {
+                                curentFormula.Add(NotionalVerbFormulaItem.Vs.NotionalVerbFormulaItemID);
+                            }
+                            else if (partROutput == "4")
+                            {
+                                curentFormula.Add(NotionalVerbFormulaItem.Ving.NotionalVerbFormulaItemID);
+                            }
+                        }
+                        else if (partOutput == "4")
+                        {
+                            curentFormula.Add(FormulaItem.OtherPart.FormulaItemTypeID);
+                        }
+                    }
+                    else if(output == "2")
+                    {
+                        isContinue = false;
+                    }
+                }
+            }
+
+            bool isCorrect = false;
+            foreach(var fl in formulaList)
+            {
+                if (fl.Length == curentFormula.Count)
+                {
+                    bool rr = true;
+                    for (int i = 0; i < curentFormula.Count; i++)
+                    {
+                        string cfData = string.Empty;
+                        FormulaItem fi = fl[i];
+                        if(fi is ModalVerbFormulaItem)
+                        {
+                            var tfi = fi as ModalVerbFormulaItem;
+                            cfData = tfi.ModalVerbFormulaItemID;
+                        }
+                        else if(fi is NotionalVerbFormulaItem)
+                        {
+                            var tfi = fi as NotionalVerbFormulaItem;
+                            cfData = tfi.NotionalVerbFormulaItemID;
+                        }
+                        else
+                        {
+                            cfData = fi.FormulaItemTypeID;
+                        }
+                        if (cfData != curentFormula[i])
+                        {
+                            rr = false; ;
+                            break;
+                        }
+                    }
+                    if (rr)
+                    {
+                        isCorrect = true;
+                        break;
+                    }
+                }
+            }
+
+            ShowResult(isCorrect);
+        }
+
+        private static string GetFormula(IEnumerable<string> formulaItemList)
+        {
+            string result = string.Empty;
+            result += "[ ";
+
+            string formula = string.Join(" + ", formulaItemList);
+            if (string.IsNullOrWhiteSpace(formula))
+            {
+                result += "Пусто";
+            }
+            else
+            {
+                result += formula;
+            }
+
+            result += " ]";
+            return result;
         }
 
         private static void ShowResult(bool isCorrect)

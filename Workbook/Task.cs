@@ -16,5 +16,6 @@ namespace Workbook
         public string[] TranslationsList { get; set; }
         
         public List<string[]> CompositionList { get; set; }
+        public List<FormulaItem[]> FormulaList { get; set; }
     }
 }

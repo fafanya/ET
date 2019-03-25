@@ -40,6 +40,22 @@ namespace Workbook
                         SentencePart.spAttribute,
                         SentencePart.spObject
                     }
+                },
+                FormulaList = new List<FormulaItem[]>
+                {
+                    new FormulaItem[]
+                    {
+                        FormulaItem.OtherPart,
+                        FormulaItem.Subject,
+                        NotionalVerbFormulaItem.Vs,
+                        FormulaItem.OtherPart
+                    },
+                    new FormulaItem[]
+                    {
+                        FormulaItem.Subject,
+                        NotionalVerbFormulaItem.Vs,
+                        FormulaItem.OtherPart
+                    }
                 }
             };
             test.AddTask(task);
@@ -62,6 +78,17 @@ namespace Workbook
                         SentencePart.spSubject,
                         SentencePart.spPredicate,
                         SentencePart.spObject
+                    }
+                },
+                FormulaList = new List<FormulaItem[]>
+                {
+                    new FormulaItem[]
+                    {
+                        FormulaItem.OtherPart,
+                        FormulaItem.Subject,
+                        ModalVerbFormulaItem.Was,
+                        NotionalVerbFormulaItem.Ving,
+                        FormulaItem.OtherPart
                     }
                 }
             };
