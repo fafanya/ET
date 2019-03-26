@@ -29,6 +29,28 @@ namespace ClientAndroid
 
             TextView tv = FindViewById<TextView>(Resource.Id.tvNativeLangText);
             tv.Text = m_Task.NativeLangText;
+
+            Button btnTaskOK = FindViewById<Button>(Resource.Id.btnTaskOK);
+            btnTaskOK.Click += BtnTaskOK_Click;
+
+            Button btnAddFormulaItem = FindViewById<Button>(Resource.Id.btnAddFormulaItem);
+            btnAddFormulaItem.Click += BtnAddFormulaItem_Click;
+        }
+
+        private void BtnAddFormulaItem_Click(object sender, EventArgs e)
+        {
+            Button btnFormulaItem = new Button(this)
+            {
+                Text = "Элемент"
+            };
+
+            LinearLayout llFormulaItemList = FindViewById<LinearLayout>(Resource.Id.llFormulaItemList);
+            llFormulaItemList.AddView(btnFormulaItem);
+        }
+
+        private void BtnTaskOK_Click(object sender, EventArgs e)
+        {
+            Finish();
         }
 
         private void InitTask()
