@@ -4,6 +4,7 @@ using System.Text;
 
 namespace Workbook
 {
+    [Serializable]
     public class Test
     {
         private List<Task> m_TaskList;

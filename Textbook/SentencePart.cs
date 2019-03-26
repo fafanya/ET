@@ -4,6 +4,7 @@ using System.Text;
 
 namespace Textbook
 {
+    [Serializable]
     public class SentencePart
     {
         public const string spSubject = "Подлежащее";

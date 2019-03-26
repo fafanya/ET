@@ -4,6 +4,7 @@ using System.Text;
 
 namespace Textbook
 {
+    [Serializable]
     public class FormulaItem
     {
         public static readonly FormulaItem ModalVerb = new FormulaItem("Модальный глагол");
@@ -19,6 +20,7 @@ namespace Textbook
         }
     }
 
+    [Serializable]
     public class ModalVerbFormulaItem : FormulaItem
     {
         public static readonly ModalVerbFormulaItem Do = new ModalVerbFormulaItem("Do");
@@ -34,6 +36,7 @@ namespace Textbook
         }
     }
 
+    [Serializable]
     public class NotionalVerbFormulaItem : FormulaItem
     {
         public static readonly NotionalVerbFormulaItem V = new NotionalVerbFormulaItem("V");

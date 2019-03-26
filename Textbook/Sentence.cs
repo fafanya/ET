@@ -4,6 +4,7 @@ using System.Text;
 
 namespace Textbook
 {
+    [Serializable]
     public class Sentence
     {
         public enum Pronoun

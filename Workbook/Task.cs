@@ -6,8 +6,10 @@ using Textbook;
 
 namespace Workbook
 {
+    [Serializable]
     public class Task
     {
+        public int ID { get; private set; }
         public int SeqNo { get; set; }
         public TaskType TaskType { get; set; }
         public string NativeLangText { get; set; }
@@ -17,5 +19,10 @@ namespace Workbook
         
         public List<string[]> CompositionList { get; set; }
         public List<FormulaItem[]> FormulaList { get; set; }
+
+        public Task(int id)
+        {
+            ID = id;
+        }
     }
 }

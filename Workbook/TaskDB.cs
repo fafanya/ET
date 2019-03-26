@@ -5,13 +5,24 @@ using Textbook;
 
 namespace Workbook
 {
-    public static class TestCreator
+    public class TaskDB
     {
-        public static Test Create()
-        {
-            Test test = new Test();
+        private List<Task> m_TaskList;
 
-            Task task = new Task
+        public static TaskDB Instance { get; } = new TaskDB();
+
+        public IEnumerable<Task> TaskList
+        {
+            get
+            {
+                return m_TaskList;
+            }
+        }
+
+        private TaskDB()
+        {
+            m_TaskList = new List<Task>();
+            Task task = new Task(1)
             {
                 NativeLangText = "Мой брат хорошо играет в футбол.",
                 TranslationsList = new string[]
@@ -58,9 +69,8 @@ namespace Workbook
                     }
                 }
             };
-            test.AddTask(task);
-
-            task = new Task
+            m_TaskList.Add(task);
+            task = new Task(2)
             {
                 NativeLangText = "Вчера в 9 вечера я выполнял домашнее задание.",
                 TranslationsList = new string[]
@@ -92,9 +102,7 @@ namespace Workbook
                     }
                 }
             };
-            test.AddTask(task);
-
-            return test;
+            m_TaskList.Add(task);
         }
     }
 }

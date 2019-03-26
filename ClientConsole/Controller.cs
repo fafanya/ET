@@ -14,7 +14,7 @@ namespace ClientConsole
             Console.WriteLine("*******   Тест начат   *******");
             Console.WriteLine();
 
-            Test test = TestCreator.Create();
+            Test test = TestGenerator.Generate();
             foreach(Task task in test.TaskList)
             {
                 switch (task.TaskType)

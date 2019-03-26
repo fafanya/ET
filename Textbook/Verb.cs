@@ -5,6 +5,7 @@ namespace Textbook
     /// <summary>
     /// Время
     /// </summary>
+    [Serializable]
     public enum VerbTense
     {
         None = 0,
@@ -17,6 +18,7 @@ namespace Textbook
     /// <summary>
     /// Вид
     /// </summary>
+    [Serializable]
     public enum VerbAspect
     {
         None = 0,
@@ -29,6 +31,7 @@ namespace Textbook
     /// <summary>
     /// Тип
     /// </summary>
+    [Serializable]
     public enum VerbType
     {
         None = 0,

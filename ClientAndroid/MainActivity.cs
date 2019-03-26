@@ -65,7 +65,7 @@ namespace ClientAndroid
 
         private void FabOnClick(object sender, EventArgs eventArgs)
         {
-            StartActivity(typeof(TaskActivity));
+            StartActivity(typeof(TestActivity));
         }
 
         public bool OnNavigationItemSelected(IMenuItem item)
