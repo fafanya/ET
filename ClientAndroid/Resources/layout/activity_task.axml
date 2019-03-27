@@ -1,29 +1,120 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<RelativeLayout
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	android:orientation="vertical"
 	android:layout_width="match_parent"
-	android:layout_height="match_parent">
+	android:layout_height="match_parent"
+	android:padding="16dp">
+
 	<TextView
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
-		android:layout_centerInParent="true"
-		android:id="@+id/tvNativeLangText"/>
-	<Button
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:text="Добавить"
-		android:id="@+id/btnAddFormulaItem"/>
-	<LinearLayout
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:id="@+id/llFormulaItemList">
+		android:text="Дано предложение:"
+		android:textStyle="bold"
+		android:id="@+id/tvTaskHeader"/>
 
+	<TextView
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_below="@id/tvTaskHeader"
+		android:text="Очень очень очень очень очень очень очень очень очень очень очень очень очень очень очень очень длинный текст задания."
+		android:layout_margin="7dp"
+		android:id="@+id/tvNativeLangText"/>
+
+	<LinearLayout
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:weightSum="2"
+		android:layout_below="@id/tvNativeLangText"
+		android:id="@+id/llVerbTense">
+		<TextView
+			android:layout_weight="1"
+			android:layout_height="wrap_content"
+			android:textStyle="bold"
+			android:text="Выберите время:"/>
+		<Spinner
+			android:id="@+id/spVerbTense"
+			android:layout_weight="1"
+			android:layout_height="wrap_content"/>
 	</LinearLayout>
+	<LinearLayout
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:weightSum="2"
+		android:layout_below="@id/llVerbTense"
+		android:id="@+id/llVerbType">
+		<TextView
+			android:layout_weight="1"
+			android:layout_height="wrap_content"
+			android:textStyle="bold"
+			android:text="Выберите тип:"/>
+		<Spinner
+			android:id="@+id/spVerbType"
+			android:layout_weight="1"
+			android:layout_alignParentRight="true"
+			android:layout_height="wrap_content"/>
+	</LinearLayout>
+
+	<TextView
+		android:layout_width="150dp"
+		android:layout_height="wrap_content"
+		android:layout_below="@id/llVerbType"
+		android:text="Составьте формулу:"
+		android:textStyle="bold"
+		android:id="@+id/tvFormulaHeader"/>
+
+	<LinearLayout
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_below="@id/tvFormulaHeader"
+		android:orientation="vertical"
+		android:layout_alignParentRight="true"
+		android:id="@+id/llFormulaItemList">
+		<LinearLayout
+			android:weightSum="2"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content">
+			<Spinner
+				android:layout_weight="1"
+				android:layout_height="wrap_content"
+				android:layout_width="0dp"
+				android:id="@+id/spFormulaItem_0_0"/>
+			<Spinner
+				android:layout_weight="1"
+				android:layout_height="wrap_content"
+				android:layout_width="0dp"
+				android:id="@+id/spFormulaItem_0_1"/>
+		</LinearLayout>
+		<LinearLayout
+			android:weightSum="2"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content">
+			<Spinner
+				android:layout_weight="1"
+				android:layout_height="wrap_content"
+				android:layout_width="0dp"
+				android:id="@+id/spFormulaItem_1_0"/>
+			<Spinner
+				android:layout_weight="1"
+				android:layout_height="wrap_content"
+				android:layout_width="0dp"
+				android:id="@+id/spFormulaItem_1_1"/>
+		</LinearLayout>
+	</LinearLayout>
+
+	<Button
+		android:layout_width="50dp"
+		android:layout_height="wrap_content"
+		android:layout_below="@id/llFormulaItemList"
+		android:layout_alignParentRight="true"
+		android:text="+"
+		android:id="@+id/btnAddFormulaItem"/>
+
 	<Button
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
-		android:layout_centerInParent="true"
+		android:layout_alignParentRight="true"
+		android:layout_alignParentBottom="true"
 		android:text="Готово"
 		android:id="@+id/btnTaskOK"/>
-</LinearLayout>
+</RelativeLayout>
