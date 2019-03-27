@@ -28,11 +28,13 @@
 		android:layout_below="@id/tvNativeLangText"
 		android:id="@+id/llVerbTense">
 		<TextView
+			android:layout_width="0dp"
 			android:layout_weight="1"
 			android:layout_height="wrap_content"
 			android:textStyle="bold"
 			android:text="Выберите время:"/>
 		<Spinner
+			android:layout_width="0dp"
 			android:id="@+id/spVerbTense"
 			android:layout_weight="1"
 			android:layout_height="wrap_content"/>
@@ -45,11 +47,13 @@
 		android:id="@+id/llVerbType">
 		<TextView
 			android:layout_weight="1"
+			android:layout_width="0dp"
 			android:layout_height="wrap_content"
 			android:textStyle="bold"
 			android:text="Выберите тип:"/>
 		<Spinner
 			android:id="@+id/spVerbType"
+			android:layout_width="0dp"
 			android:layout_weight="1"
 			android:layout_alignParentRight="true"
 			android:layout_height="wrap_content"/>
@@ -70,36 +74,6 @@
 		android:orientation="vertical"
 		android:layout_alignParentRight="true"
 		android:id="@+id/llFormulaItemList">
-		<LinearLayout
-			android:weightSum="2"
-			android:layout_width="match_parent"
-			android:layout_height="wrap_content">
-			<Spinner
-				android:layout_weight="1"
-				android:layout_height="wrap_content"
-				android:layout_width="0dp"
-				android:id="@+id/spFormulaItem_0_0"/>
-			<Spinner
-				android:layout_weight="1"
-				android:layout_height="wrap_content"
-				android:layout_width="0dp"
-				android:id="@+id/spFormulaItem_0_1"/>
-		</LinearLayout>
-		<LinearLayout
-			android:weightSum="2"
-			android:layout_width="match_parent"
-			android:layout_height="wrap_content">
-			<Spinner
-				android:layout_weight="1"
-				android:layout_height="wrap_content"
-				android:layout_width="0dp"
-				android:id="@+id/spFormulaItem_1_0"/>
-			<Spinner
-				android:layout_weight="1"
-				android:layout_height="wrap_content"
-				android:layout_width="0dp"
-				android:id="@+id/spFormulaItem_1_1"/>
-		</LinearLayout>
 	</LinearLayout>
 
 	<Button

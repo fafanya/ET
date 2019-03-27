@@ -25,6 +25,7 @@ namespace ClientAndroid
             base.OnCreate(savedInstanceState);
             SetContentView(Resource.Layout.activity_task);
 
+            InitTask();
             AddFormulaItem();
 
             TextView tv = FindViewById<TextView>(Resource.Id.tvNativeLangText);
@@ -45,12 +46,10 @@ namespace ClientAndroid
 
         private void SpVerbType_ItemSelected(object sender, AdapterView.ItemSelectedEventArgs e)
         {
-            throw new NotImplementedException();
         }
 
         private void SpVerbTense_ItemSelected(object sender, AdapterView.ItemSelectedEventArgs e)
         {
-            throw new NotImplementedException();
         }
 
         private void BtnAddFormulaItem_Click(object sender, EventArgs e)
@@ -85,10 +84,20 @@ namespace ClientAndroid
                 Weight = 1
             };
 
+            string[] sentencePartList = new string[]
+            {
+                "-",
+                FormulaItem.ModalVerb.FormulaItemTypeID,
+                FormulaItem.NotionalVerb.FormulaItemTypeID,
+                FormulaItem.Subject.FormulaItemTypeID,
+                FormulaItem.OtherPart.FormulaItemTypeID
+            };
             Spinner spSentenceItem = new Spinner(this)
             {
                 LayoutParameters = lp
             };
+            var adapter = new ArrayAdapter(this, Resource.Layout.support_simple_spinner_dropdown_item, sentencePartList);
+            spSentenceItem.Adapter = adapter;
             spSentenceItem.ItemSelected += SpSentenceItem_ItemSelected;
             ll.AddView(spSentenceItem);
 
@@ -96,6 +105,8 @@ namespace ClientAndroid
             {
                 LayoutParameters = lp
             };
+            adapter = new ArrayAdapter(this, Resource.Layout.support_simple_spinner_dropdown_item, new string[] { "-" });
+            spSentenceItemType.Adapter = adapter;
             spSentenceItemType.ItemSelected += SpSentenceItemType_ItemSelected;
             ll.AddView(spSentenceItemType);
 
@@ -105,12 +116,41 @@ namespace ClientAndroid
 
         private void SpSentenceItemType_ItemSelected(object sender, AdapterView.ItemSelectedEventArgs e)
         {
-            throw new NotImplementedException();
         }
 
         private void SpSentenceItem_ItemSelected(object sender, AdapterView.ItemSelectedEventArgs e)
         {
-            throw new NotImplementedException();
+            LinearLayout ll = (sender as Spinner).Parent as LinearLayout;
+            Spinner sp = ll.GetChildAt(1) as Spinner;
+            List<string> sentencePartList = new List<string>() { "-" };
+            if (e.Position == 0)
+            {
+                
+            }
+            if(e.Position == 1)
+            {
+                sentencePartList.Add(ModalVerbFormulaItem.Been.ModalVerbFormulaItemID);
+                sentencePartList.Add(ModalVerbFormulaItem.Was.ModalVerbFormulaItemID);
+                sentencePartList.Add(ModalVerbFormulaItem.Were.ModalVerbFormulaItemID);
+                sentencePartList.Add(ModalVerbFormulaItem.Do.ModalVerbFormulaItemID);
+            }
+            else if(e.Position == 2)
+            {
+                sentencePartList.Add(NotionalVerbFormulaItem.V.NotionalVerbFormulaItemID);
+                sentencePartList.Add(NotionalVerbFormulaItem.Vs.NotionalVerbFormulaItemID);
+                sentencePartList.Add(NotionalVerbFormulaItem.Ves.NotionalVerbFormulaItemID);
+                sentencePartList.Add(NotionalVerbFormulaItem.Ving.NotionalVerbFormulaItemID);
+            }
+            else if(e.Position == 3)
+            {
+
+            }
+            else if(e.Position == 4)
+            {
+
+            }
+            var adapter = new ArrayAdapter(this, Resource.Layout.support_simple_spinner_dropdown_item, sentencePartList.ToArray());
+            sp.Adapter = adapter;
         }
     }
 }

@@ -7,6 +7,7 @@ namespace Textbook
     [Serializable]
     public class SentencePart
     {
+        public const string spNone = "Не определено";
         public const string spSubject = "Подлежащее";
         public const string spPredicate = "Сказуемое";
         public const string spAttribute = "Определение";
