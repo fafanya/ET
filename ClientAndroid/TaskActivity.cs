@@ -59,6 +59,7 @@ namespace ClientAndroid
 
         private void BtnTaskOK_Click(object sender, EventArgs e)
         {
+            SetResult(Result.Ok);
             Finish();
         }
 

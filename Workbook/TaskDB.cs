@@ -33,25 +33,6 @@ namespace Workbook
                 VerbTense = VerbTense.Present,
                 VerbAspect = VerbAspect.Simple,
                 TaskType = TaskType.MakeTense,
-                CompositionList = new List<string[]>
-                {
-                    new string[]
-                    {
-                        SentencePart.spAttribute,
-                        SentencePart.spSubject,
-                        SentencePart.spPredicate,
-                        SentencePart.spObject,
-                        SentencePart.spAdverbialModifier
-                    },
-                    new string[]
-                    {
-                        SentencePart.spAttribute,
-                        SentencePart.spSubject,
-                        SentencePart.spPredicate,
-                        SentencePart.spAttribute,
-                        SentencePart.spObject
-                    }
-                },
                 FormulaList = new List<FormulaItem[]>
                 {
                     new FormulaItem[]
@@ -80,16 +61,6 @@ namespace Workbook
                 VerbTense = VerbTense.Past,
                 VerbAspect = VerbAspect.Continuous,
                 TaskType = TaskType.MakeTense,
-                CompositionList = new List<string[]>
-                {
-                    new string[]
-                    {
-                        SentencePart.spAdverbialModifier,
-                        SentencePart.spSubject,
-                        SentencePart.spPredicate,
-                        SentencePart.spObject
-                    }
-                },
                 FormulaList = new List<FormulaItem[]>
                 {
                     new FormulaItem[]
