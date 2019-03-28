@@ -44,7 +44,7 @@
 		android:layout_height="wrap_content"
 		android:weightSum="2"
 		android:layout_below="@id/llVerbTense"
-		android:id="@+id/llVerbType">
+		android:id="@+id/llVerbAspect">
 		<TextView
 			android:layout_weight="1"
 			android:layout_width="0dp"
@@ -52,7 +52,7 @@
 			android:textStyle="bold"
 			android:text="Выберите тип:"/>
 		<Spinner
-			android:id="@+id/spVerbType"
+			android:id="@+id/spVerbAspect"
 			android:layout_width="0dp"
 			android:layout_weight="1"
 			android:layout_alignParentRight="true"
@@ -62,7 +62,7 @@
 	<TextView
 		android:layout_width="150dp"
 		android:layout_height="wrap_content"
-		android:layout_below="@id/llVerbType"
+		android:layout_below="@id/llVerbAspect"
 		android:text="Составьте формулу:"
 		android:textStyle="bold"
 		android:id="@+id/tvFormulaHeader"/>

@@ -2645,11 +2645,11 @@ namespace ClientAndroid
 			// aapt resource value: 0x7f080094
 			public const int llFormulaItemList = 2131230868;
 			
+			// aapt resource value: 0x7f080091
+			public const int llVerbAspect = 2131230865;
+			
 			// aapt resource value: 0x7f08008f
 			public const int llVerbTense = 2131230863;
-			
-			// aapt resource value: 0x7f080091
-			public const int llVerbType = 2131230865;
 			
 			// aapt resource value: 0x7f0800bf
 			public const int masked = 2131230911;
@@ -2825,11 +2825,11 @@ namespace ClientAndroid
 			// aapt resource value: 0x7f080043
 			public const int snap = 2131230787;
 			
+			// aapt resource value: 0x7f080092
+			public const int spVerbAspect = 2131230866;
+			
 			// aapt resource value: 0x7f080090
 			public const int spVerbTense = 2131230864;
-			
-			// aapt resource value: 0x7f080092
-			public const int spVerbType = 2131230866;
 			
 			// aapt resource value: 0x7f080064
 			public const int spacer = 2131230820;

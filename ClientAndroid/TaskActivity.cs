@@ -37,14 +37,11 @@ namespace ClientAndroid
             Button btnAddFormulaItem = FindViewById<Button>(Resource.Id.btnAddFormulaItem);
             btnAddFormulaItem.Click += BtnAddFormulaItem_Click;
 
-            Spinner spVerbTense = FindViewById<Spinner>(Resource.Id.spVerbTense);
-            spVerbTense.ItemSelected += SpVerbTense_ItemSelected;
-
-            Spinner spVerbType = FindViewById<Spinner>(Resource.Id.spVerbType);
-            spVerbType.ItemSelected += SpVerbType_ItemSelected;
+            InitVerbTense();
+            InitVerbAspect();
         }
 
-        private void SpVerbType_ItemSelected(object sender, AdapterView.ItemSelectedEventArgs e)
+        private void SpVerbAspect_ItemSelected(object sender, AdapterView.ItemSelectedEventArgs e)
         {
         }
 
@@ -70,6 +67,40 @@ namespace ClientAndroid
             {
                 m_Task = TaskDB.Instance.TaskList.First(x => x.ID == taskID);
             }
+        }
+
+        private void InitVerbTense()
+        {
+            Spinner spVerbTense = FindViewById<Spinner>(Resource.Id.spVerbTense);
+            spVerbTense.ItemSelected += SpVerbTense_ItemSelected;
+
+            Type t = typeof(VerbTense);
+            List<string> verbTenseList = new List<string>();
+            var v = (int[])(Enum.GetValues(t));
+            for (int i = 1; i <= v.Length; i++)
+            {
+                verbTenseList.Add(Enum.GetName(t, v[i - 1]));
+            }
+
+            var adapter = new ArrayAdapter(this, Resource.Layout.support_simple_spinner_dropdown_item, verbTenseList);
+            spVerbTense.Adapter = adapter;
+        }
+
+        private void InitVerbAspect()
+        {
+            Spinner spVerbAspect = FindViewById<Spinner>(Resource.Id.spVerbAspect);
+            spVerbAspect.ItemSelected += SpVerbAspect_ItemSelected;
+
+            Type t = typeof(VerbAspect);
+            List<string> verbAspectList = new List<string>();
+            var v = (int[])(Enum.GetValues(t));
+            for (int i = 1; i <= v.Length; i++)
+            {
+                verbAspectList.Add(Enum.GetName(t, v[i - 1]));
+            }
+
+            var adapter = new ArrayAdapter(this, Resource.Layout.support_simple_spinner_dropdown_item, verbAspectList);
+            spVerbAspect.Adapter = adapter;
         }
 
         private void AddFormulaItem()
@@ -150,7 +181,7 @@ namespace ClientAndroid
             {
 
             }
-            var adapter = new ArrayAdapter(this, Resource.Layout.support_simple_spinner_dropdown_item, sentencePartList.ToArray());
+            var adapter = new ArrayAdapter(this, Resource.Layout.support_simple_spinner_dropdown_item, sentencePartList);
             sp.Adapter = adapter;
         }
     }
