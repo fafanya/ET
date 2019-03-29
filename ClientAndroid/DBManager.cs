@@ -42,5 +42,10 @@ namespace ClientAndroid
                 System.Diagnostics.Debug.WriteLine(ex.ToString());
             }
         }
+
+        internal void SaveTestResults(TestResult tr)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

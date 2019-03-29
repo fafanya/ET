@@ -12,6 +12,7 @@ using Android.Widget;
 
 using Textbook;
 using Workbook;
+using ClientCommon;
 
 namespace ClientAndroid
 {
@@ -45,6 +46,10 @@ namespace ClientAndroid
                 {
                     return;
                 }
+                else
+                {
+                    SaveTestResults();
+                }
             }
             SetResult(resultCode);
             Finish();
@@ -67,6 +72,12 @@ namespace ClientAndroid
                 StartActivityForResult(intent, task.ID);
             }
             return isContinue;
+        }
+
+        private void SaveTestResults()
+        {
+            TestResult tr = new TestResult();
+            DBManager.Instance.SaveTestResults(tr);
         }
     }
 }
