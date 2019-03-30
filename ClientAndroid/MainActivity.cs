@@ -78,7 +78,7 @@ namespace ClientAndroid
 
             if (id == Resource.Id.nav_camera)
             {
-                // Handle the camera action
+                //StartActivity(typeof(MainActivity));
             }
             else if (id == Resource.Id.nav_gallery)
             {
