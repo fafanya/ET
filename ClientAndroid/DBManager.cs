@@ -25,11 +25,13 @@ namespace ClientAndroid
         {
         }
 
-        public async void RefreshDB()
+        public async void RefreshDB(Context applicationContext)
         {
-            var dbFolder = System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal);
+            ContextWrapper cw = new ContextWrapper(applicationContext);
+            var dbFolder = cw.GetExternalFilesDir(Android.OS.Environment.DirectoryDocuments);
+
             var fileName = "db.db";
-            var dbFullPath = Path.Combine(dbFolder, fileName);
+            var dbFullPath = Path.Combine(dbFolder.AbsolutePath, fileName);
             try
             {
                 using (var db = new ClientDBContext(dbFullPath))
@@ -45,7 +47,18 @@ namespace ClientAndroid
 
         internal void SaveTestResults(TestResult tr)
         {
-            throw new NotImplementedException();
+            try
+            {
+                using (var db = new ClientDBContext())
+                {
+                    db.Add(tr);
+                    db.SaveChanges();
+                }
+            }
+            catch(Exception e)
+            {
+
+            }
         }
     }
 }

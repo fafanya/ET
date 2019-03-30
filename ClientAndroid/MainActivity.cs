@@ -17,7 +17,11 @@ namespace ClientAndroid
         protected override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
+
+            DBManager.Instance.RefreshDB(ApplicationContext);
+
             SetContentView(Resource.Layout.activity_main);
+
             Android.Support.V7.Widget.Toolbar toolbar = FindViewById<Android.Support.V7.Widget.Toolbar>(Resource.Id.toolbar);
             SetSupportActionBar(toolbar);
 

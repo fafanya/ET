@@ -8,8 +8,9 @@ namespace ClientCommon
     public class ClientDBContext : DbContext
     {
         public DbSet<User> Users { get; set; }
+        public DbSet<TestResult> TestResults { get; set; }
 
-        private string DatabasePath { get; set; }
+        private static string DatabasePath { get; set; }
 
         public ClientDBContext()
         {
