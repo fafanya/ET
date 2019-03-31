@@ -45,7 +45,7 @@ namespace ClientAndroid
             }
         }
 
-        internal void SaveTestResults(TestResult tr)
+        internal void SaveTestResults(Test tr)
         {
             try
             {

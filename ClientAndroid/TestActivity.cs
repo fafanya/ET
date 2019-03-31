@@ -19,8 +19,8 @@ namespace ClientAndroid
     [Activity(Label = "TestActivity")]
     public class TestActivity : Activity
     {
-        private Test m_Test;
-        private IEnumerator<Task> m_TaskEnumerator;
+        private Workbook.Test m_Test;
+        private IEnumerator<Workbook.Task> m_TaskEnumerator;
 
         protected override void OnCreate(Bundle savedInstanceState)
         {
@@ -66,7 +66,7 @@ namespace ClientAndroid
             bool isContinue = m_TaskEnumerator.MoveNext();
             if (isContinue)
             {
-                Task task = m_TaskEnumerator.Current;
+                Workbook.Task task = m_TaskEnumerator.Current;
                 Intent intent = new Intent(this, typeof(TaskActivity));
                 intent.PutExtra("A_TASK_ID", task.ID);
                 StartActivityForResult(intent, task.ID);
@@ -76,7 +76,7 @@ namespace ClientAndroid
 
         private void SaveTestResults()
         {
-            TestResult tr = new TestResult();
+            ClientCommon.Test tr = new ClientCommon.Test();
             DBManager.Instance.SaveTestResults(tr);
         }
     }
