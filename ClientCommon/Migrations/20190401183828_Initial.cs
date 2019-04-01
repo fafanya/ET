@@ -55,7 +55,6 @@ namespace ClientCommon.Migrations
                     TaskId = table.Column<int>(nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     Text = table.Column<string>(nullable: true),
-                    SeqNo = table.Column<int>(nullable: false),
                     TaskTypeId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
@@ -96,6 +95,7 @@ namespace ClientCommon.Migrations
                 {
                     TaskInstanceId = table.Column<int>(nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
+                    SeqNo = table.Column<int>(nullable: false),
                     TestId = table.Column<int>(nullable: false),
                     TaskId = table.Column<int>(nullable: false)
                 },
@@ -123,7 +123,7 @@ namespace ClientCommon.Migrations
                     TaskItemId = table.Column<int>(nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     SeqNo = table.Column<int>(nullable: false),
-                    ValueInt = table.Column<int>(nullable: false),
+                    ValueInt = table.Column<int>(nullable: true),
                     ValueString = table.Column<string>(nullable: true),
                     TaskId = table.Column<int>(nullable: true),
                     TaskInstanceId = table.Column<int>(nullable: true),

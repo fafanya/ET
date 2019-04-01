@@ -8,6 +8,8 @@ using Android.Support.V4.View;
 using Android.Support.V4.Widget;
 using Android.Support.V7.App;
 using Android.Views;
+using Android.Content;
+using ClientCommon;
 
 namespace ClientAndroid
 {
@@ -18,7 +20,9 @@ namespace ClientAndroid
         {
             base.OnCreate(savedInstanceState);
 
-            DBManager.Instance.RefreshDB(ApplicationContext);
+            ContextWrapper cw = new ContextWrapper(ApplicationContext);
+            var dbFolder = cw.GetExternalFilesDir(Android.OS.Environment.DirectoryDocuments);
+            DBManager.Instance.RefreshDB(dbFolder.AbsolutePath);
 
             SetContentView(Resource.Layout.activity_main);
 

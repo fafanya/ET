@@ -1,5 +1,6 @@
 ﻿using System.Runtime.Serialization;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Collections.Generic;
 
 namespace ClientCommon
 {
@@ -30,6 +31,9 @@ namespace ClientCommon
         [DataMember]
         [ForeignKey("ParentId")]
         public TaskItem Parent { get; set; }
+        [DataMember]
+        [InverseProperty("Parent")]
+        public ICollection<TaskItem> Children { get; set; }
 
         [DataMember]
         public int TaskItemTypeId { get; set; }

@@ -1,7 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Text;
-using Workbook;
+using System.Linq;
+using System.Collections;
+using System.Collections.Generic;
+
+using ClientCommon;
 using Textbook;
 
 namespace ClientConsole
@@ -14,12 +17,12 @@ namespace ClientConsole
             Console.WriteLine("*******   Тест начат   *******");
             Console.WriteLine();
 
-            Test test = TestGenerator.Generate();
-            foreach(Task task in test.TaskList)
+            Test test = DBManager.Instance.GenerateTest();
+            foreach(TaskInstance task in test.TaskInstances)
             {
-                switch (task.TaskType)
+                switch (task.Task.TaskTypeId)
                 {
-                    case TaskType.MakeTense:
+                    case TaskType.ttChooseSentenceVerbTense:
                         {
                             RunMakeTenceTask(task);
                             continue;
@@ -31,36 +34,51 @@ namespace ClientConsole
                 }
             }
 
+            DBManager.Instance.SaveTest(test);
             Console.WriteLine();
             Console.WriteLine("*******   Тест завершён   *******");
         }
 
-        public static void RunMakeTenceTask(Task task)
+        public static void RunMakeTenceTask(TaskInstance ti)
         {
-            Console.WriteLine("-------   Задание " + task.SeqNo + "   -------");
+            Console.WriteLine("-------   Задание " + ti.SeqNo + "   -------");
             Console.WriteLine();
 
             Console.WriteLine("Дано предложение:");
-            Console.WriteLine(task.NativeLangText);
+            Console.WriteLine(ti.Task.Text);
             Console.WriteLine();
 
-            /*RunSelectSubTask(typeof(VerbTense), "время", task.VerbTense);
+            TaskItem taskItem = ti.Task.TaskItems.First(x => x.TaskItemTypeId == TaskItemType.itChooseTense);
+            int answer = RunSelectSubTask(typeof(VerbTense), "время", taskItem.ValueInt);
+            TaskItem parentTaskItem = new TaskItem
+            {
+                TaskItemTypeId = TaskItemType.itChooseTense,
+                ValueInt = answer
+            };
+            ti.TaskItems.Add(parentTaskItem);
             Console.WriteLine();
 
-            RunSelectSubTask(typeof(VerbAspect), "вид времени", task.VerbAspect);
-            Console.WriteLine();*/
-
-            RunFormulaSubTask(task.FormulaList);
+            taskItem = ti.Task.TaskItems.First(x => x.TaskItemTypeId == TaskItemType.itChooseAspect);
+            answer = RunSelectSubTask(typeof(VerbAspect), "вид времени", taskItem.ValueInt);
+            parentTaskItem = new TaskItem
+            {
+                TaskItemTypeId = TaskItemType.itChooseAspect,
+                ValueInt = answer
+            };
+            ti.TaskItems.Add(parentTaskItem);
             Console.WriteLine();
 
-            /*RunTranslateSubTask(task);
-            Console.WriteLine();*/
+            RunFormulaSubTask(ti);
+            Console.WriteLine();
+
+            RunTranslateSubTask(ti);
+            Console.WriteLine();
 
             Console.WriteLine("-------   Задание окончено   -------");
             Console.WriteLine("------------------------------------");
         }
 
-        private static void RunSelectSubTask(Type t, string header, object correctValue)
+        private static int RunSelectSubTask(Type t, string header, object correctValue)
         {
             Console.WriteLine("Выберите "+ header + ":");
             var v = (int[])(Enum.GetValues(t));
@@ -93,9 +111,10 @@ namespace ClientConsole
             }
 
             ShowResult(isCorrect);
+            return index;
         }
 
-        private static void RunTranslateSubTask(Task task)
+        private static void RunTranslateSubTask(TaskInstance taskInstance)
         {
             Console.WriteLine("Переведите предложение:");
 
@@ -105,35 +124,55 @@ namespace ClientConsole
             tempUserAnswer = tempUserAnswer.Replace(",", "");
 
             bool isCorrect = false;
-            foreach(var tr in task.TranslationsList)
+            foreach (var ti in taskInstance.Task.TaskItems.Where(x => x.TaskItemTypeId == TaskItemType.itTranslate))
             {
-                string tempTr = tr.Replace(".", "");
-                tempTr = tempTr.Replace(" ", "");
-                tempTr = tempTr.Replace(",", "");
-
-                if(tempUserAnswer == tempTr)
+                foreach (var tiChild in ti.Children)
                 {
-                    isCorrect = true;
-                    break;
+                    string translation = tiChild.ValueString.Replace(".", "");
+                    translation = translation.Replace(" ", "");
+                    translation = translation.Replace(",", "");
+
+                    if (tempUserAnswer == translation)
+                    {
+                        isCorrect = true;
+                        break;
+                    }
                 }
             }
 
             ShowResult(isCorrect);
+
+            TaskItem parentTaskItem = new TaskItem
+            {
+                TaskItemTypeId = TaskItemType.itTranslate,
+                Children = new List<TaskItem>()
+            };
+            taskInstance.TaskItems.Add(parentTaskItem);
+
+            TaskItem taskItem = new TaskItem
+            {
+                TaskItemTypeId = TaskItemType.itTranslate,
+                ValueString = userAnswer
+            };
+            parentTaskItem.Children.Add(taskItem);
         }
 
-        private static void RunFormulaSubTask(List<FormulaItem[]> formulaList)
+        private static void RunFormulaSubTask(TaskInstance taskInstance)
         {
+            IEnumerable<TaskItem> formulaList = taskInstance.Task.TaskItems.
+                Where(x => x.TaskItemTypeId == TaskItemType.itMakeFormula);
             if (formulaList == null ||
-                formulaList.Count == 0)
+                formulaList.Count() == 0)
                 return;
 
-            List<string> curentFormula = new List<string>();
+            List<string> curentFormulaUID = new List<string>();
+            List<int> curentFormulaID = new List<int>();
 
             Console.WriteLine("Составьте формулу:");
             bool isContinue = true;
             while (isContinue)
             {
-                Console.WriteLine("Текущая формула: " + GetFormula(curentFormula));
+                Console.WriteLine("Текущая формула: " + GetFormula(curentFormulaUID));
                 bool isValid = false;
                 string output = null;
                 while (!isValid)
@@ -177,7 +216,8 @@ namespace ClientConsole
 
                         if (partOutput == "1")
                         {
-                            curentFormula.Add(FormulaItem.Subject.FormulaItemTypeUID);
+                            curentFormulaUID.Add(FormulaItem.Subject.FormulaItemTypeUID);
+                            curentFormulaID.Add(FormulaItem.Subject.FormulaItemTypeID);
                         }
                         else if (partOutput == "2")
                         {
@@ -204,19 +244,23 @@ namespace ClientConsole
 
                             if(partROutput == "1")
                             {
-                                curentFormula.Add(ModalVerbFormulaItem.Do.ModalVerbFormulaItemUID);
+                                curentFormulaUID.Add(ModalVerbFormulaItem.Do.ModalVerbFormulaItemUID);
+                                curentFormulaID.Add(ModalVerbFormulaItem.Do.ModalVerbFormulaItemID);
                             }
                             else if (partROutput == "2")
                             {
-                                curentFormula.Add(ModalVerbFormulaItem.Was.ModalVerbFormulaItemUID);
+                                curentFormulaUID.Add(ModalVerbFormulaItem.Was.ModalVerbFormulaItemUID);
+                                curentFormulaID.Add(ModalVerbFormulaItem.Was.ModalVerbFormulaItemID);
                             }
                             else if (partROutput == "3")
                             {
-                                curentFormula.Add(ModalVerbFormulaItem.Were.ModalVerbFormulaItemUID);
+                                curentFormulaUID.Add(ModalVerbFormulaItem.Were.ModalVerbFormulaItemUID);
+                                curentFormulaID.Add(ModalVerbFormulaItem.Were.ModalVerbFormulaItemID);
                             }
                             else if (partROutput == "4")
                             {
-                                curentFormula.Add(ModalVerbFormulaItem.Been.ModalVerbFormulaItemUID);
+                                curentFormulaUID.Add(ModalVerbFormulaItem.Been.ModalVerbFormulaItemUID);
+                                curentFormulaID.Add(ModalVerbFormulaItem.Been.ModalVerbFormulaItemID);
                             }
                         }
                         else if (partOutput == "3")
@@ -244,24 +288,29 @@ namespace ClientConsole
 
                             if (partROutput == "1")
                             {
-                                curentFormula.Add(NotionalVerbFormulaItem.V.NotionalVerbFormulaItemUID);
+                                curentFormulaUID.Add(NotionalVerbFormulaItem.V.NotionalVerbFormulaItemUID);
+                                curentFormulaID.Add(NotionalVerbFormulaItem.V.NotionalVerbFormulaItemID);
                             }
                             else if (partROutput == "2")
                             {
-                                curentFormula.Add(NotionalVerbFormulaItem.Ves.NotionalVerbFormulaItemUID);
+                                curentFormulaUID.Add(NotionalVerbFormulaItem.Ves.NotionalVerbFormulaItemUID);
+                                curentFormulaID.Add(NotionalVerbFormulaItem.Ves.NotionalVerbFormulaItemID);
                             }
                             else if (partROutput == "3")
                             {
-                                curentFormula.Add(NotionalVerbFormulaItem.Vs.NotionalVerbFormulaItemUID);
+                                curentFormulaUID.Add(NotionalVerbFormulaItem.Vs.NotionalVerbFormulaItemUID);
+                                curentFormulaID.Add(NotionalVerbFormulaItem.Vs.NotionalVerbFormulaItemID);
                             }
                             else if (partROutput == "4")
                             {
-                                curentFormula.Add(NotionalVerbFormulaItem.Ving.NotionalVerbFormulaItemUID);
+                                curentFormulaUID.Add(NotionalVerbFormulaItem.Ving.NotionalVerbFormulaItemUID);
+                                curentFormulaID.Add(NotionalVerbFormulaItem.Ving.NotionalVerbFormulaItemID);
                             }
                         }
                         else if (partOutput == "4")
                         {
-                            curentFormula.Add(FormulaItem.OtherPart.FormulaItemTypeUID);
+                            curentFormulaUID.Add(FormulaItem.OtherPart.FormulaItemTypeUID);
+                            curentFormulaID.Add(FormulaItem.OtherPart.FormulaItemTypeID);
                         }
                     }
                     else if(output == "2")
@@ -271,31 +320,19 @@ namespace ClientConsole
                 }
             }
 
+
+
             bool isCorrect = false;
             foreach(var fl in formulaList)
             {
-                if (fl.Length == curentFormula.Count)
+                if (fl.Children.Count == curentFormulaUID.Count)
                 {
                     bool rr = true;
-                    for (int i = 0; i < curentFormula.Count; i++)
+                    for (int i = 0; i < curentFormulaUID.Count; i++)
                     {
                         string cfData = string.Empty;
-                        FormulaItem fi = fl[i];
-                        if(fi is ModalVerbFormulaItem)
-                        {
-                            var tfi = fi as ModalVerbFormulaItem;
-                            cfData = tfi.ModalVerbFormulaItemUID;
-                        }
-                        else if(fi is NotionalVerbFormulaItem)
-                        {
-                            var tfi = fi as NotionalVerbFormulaItem;
-                            cfData = tfi.NotionalVerbFormulaItemUID;
-                        }
-                        else
-                        {
-                            cfData = fi.FormulaItemTypeUID;
-                        }
-                        if (cfData != curentFormula[i])
+                        TaskItem fi = fl.Children.First(x => x.SeqNo-1 == i);
+                        if (fi.ValueInt != curentFormulaID[i])
                         {
                             rr = false; ;
                             break;
@@ -310,6 +347,26 @@ namespace ClientConsole
             }
 
             ShowResult(isCorrect);
+
+            TaskItem parentTaskItem = new TaskItem
+            {
+                TaskItemTypeId = TaskItemType.itMakeFormula,
+                Children = new List<TaskItem>()
+            };
+            taskInstance.TaskItems.Add(parentTaskItem);
+
+            int j = 1;
+            foreach (int cfi in curentFormulaID)
+            {
+                TaskItem taskItem = new TaskItem
+                {
+                    TaskItemTypeId = TaskItemType.itMakeFormula,
+                    ValueInt = cfi,
+                    SeqNo = j
+                };
+                parentTaskItem.Children.Add(taskItem);
+                j++;
+            }
         }
 
         private static string GetFormula(IEnumerable<string> formulaItemList)

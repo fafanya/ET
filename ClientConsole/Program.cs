@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Text;
+using ClientCommon;
 
 namespace ClientConsole
 {
@@ -7,6 +8,9 @@ namespace ClientConsole
     {
         static void Main(string[] args)
         {
+            string folderAbsolurePath = Environment.CurrentDirectory;
+            DBManager.Instance.RefreshDB(folderAbsolurePath);
+
             Console.OutputEncoding = Encoding.UTF8;
             bool toContinue = true;
             while (toContinue)

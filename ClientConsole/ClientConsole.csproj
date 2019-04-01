@@ -18,7 +18,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\ClientCommon\ClientCommon.csproj" />
-    <ProjectReference Include="..\Workbook\Workbook.csproj" />
   </ItemGroup>
 
 </Project>

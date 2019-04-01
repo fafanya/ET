@@ -21,8 +21,6 @@ namespace ClientCommon.Migrations
                     b.Property<int>("TaskId")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<int>("SeqNo");
-
                     b.Property<int>("TaskTypeId");
 
                     b.Property<string>("Text");
@@ -38,6 +36,8 @@ namespace ClientCommon.Migrations
                 {
                     b.Property<int>("TaskInstanceId")
                         .ValueGeneratedOnAdd();
+
+                    b.Property<int>("SeqNo");
 
                     b.Property<int>("TaskId");
 
@@ -67,7 +67,7 @@ namespace ClientCommon.Migrations
 
                     b.Property<int>("TaskItemTypeId");
 
-                    b.Property<int>("ValueInt");
+                    b.Property<int?>("ValueInt");
 
                     b.Property<string>("ValueString");
 
@@ -166,7 +166,7 @@ namespace ClientCommon.Migrations
             modelBuilder.Entity("ClientCommon.TaskItem", b =>
                 {
                     b.HasOne("ClientCommon.TaskItem", "Parent")
-                        .WithMany()
+                        .WithMany("Children")
                         .HasForeignKey("ParentId");
 
                     b.HasOne("ClientCommon.Task", "Task")

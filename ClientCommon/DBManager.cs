@@ -1,22 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.IO;
-
-using Android.App;
-using Android.Content;
-using Android.OS;
-using Android.Runtime;
-using Android.Views;
-using Android.Widget;
-
+using System.Linq;
+using System.Collections;
+using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
-
-using ClientCommon;
 using Textbook;
 
-namespace ClientAndroid
+namespace ClientCommon
 {
     public class DBManager
     {
@@ -26,19 +16,20 @@ namespace ClientAndroid
         {
         }
 
-        public async void RefreshDB(Context applicationContext)
+        public async void RefreshDB(string folderAbsolurePath)
         {
-            ContextWrapper cw = new ContextWrapper(applicationContext);
-            var dbFolder = cw.GetExternalFilesDir(Android.OS.Environment.DirectoryDocuments);
-
             var fileName = "db.db";
-            var dbFullPath = Path.Combine(dbFolder.AbsolutePath, fileName);
+            var dbFullPath = Path.Combine(folderAbsolurePath, fileName);
             try
             {
                 using (var db = new ClientDBContext(dbFullPath))
                 {
                     await db.Database.MigrateAsync();
-                    FillDB();
+                    bool isInit = await db.TaskTypes.AnyAsync();
+                    if (!isInit)
+                    {
+                        InitDB();
+                    }
                 }
             }
             catch (Exception ex)
@@ -47,10 +38,16 @@ namespace ClientAndroid
             }
         }
 
-        private void FillDB()
+        private void InitDB()
         {
             using (var db = new ClientDBContext())
             {
+                User user = new User
+                {
+                    Name = "ПУСТО"
+                };
+                db.Add(user);
+
                 TaskType taskType = new TaskType
                 {
                     TaskTypeId = TaskType.ttChooseSentenceVerbTense,
@@ -88,7 +85,6 @@ namespace ClientAndroid
 
                 Task task = new Task
                 {
-                    SeqNo = 1,
                     Text = "Мой брат хорошо играет в футбол.",
                     TaskTypeId = TaskType.ttChooseSentenceVerbTense
                 };
@@ -219,7 +215,6 @@ namespace ClientAndroid
 
                 task = new Task
                 {
-                    SeqNo = 2,
                     Text = "Вчера в 9 вечера я выполнял домашнее задание.",
                     TaskTypeId = TaskType.ttChooseSentenceVerbTense
                 };
@@ -312,22 +307,65 @@ namespace ClientAndroid
                     SeqNo = 1
                 };
                 db.Add(taskItem);
+                db.SaveChanges();
             }
         }
 
-        internal void SaveTestResults(Test tr)
+        public Test GenerateTest()
         {
-            try
+            using (var db = new ClientDBContext())
             {
-                using (var db = new ClientDBContext())
-                {
-                    db.Add(tr);
-                    db.SaveChanges();
-                }
-            }
-            catch(Exception e)
-            {
+                User user = db.Users.First();
 
+                Test test = new Test
+                {
+                    Date = DateTime.Now,
+                    Header = "Все подряд",
+                    UserId = user.UserId
+                };
+                db.Add(test);
+
+                IEnumerable<Task> tasks = db.Tasks;
+                int i = 1;
+                foreach(Task task in tasks)
+                {
+                    TaskInstance taskInstance = new TaskInstance
+                    {
+                        TestId = test.TestId,
+                        TaskId = task.TaskId,
+                        SeqNo = i
+                    };
+                    db.Add(taskInstance);
+                    i++;
+                }
+
+                db.SaveChanges();
+                return db.Tests.
+                    Include(t1 => t1.TaskInstances).
+                        ThenInclude(y1 => y1.Task).
+                            ThenInclude(z1 => z1.TaskItems).
+                                ThenInclude(ti1 => ti1.Children).
+                    Include(t2 => t2.TaskInstances).
+                        ThenInclude(y2 => y2.TaskItems).
+                            ThenInclude(ti2 => ti2.Children).
+                    FirstOrDefault(x => x.TestId == test.TestId);
+            }
+        }
+
+        public TaskInstance GetTaskInstance(int taskInstanceId)
+        {
+            using (var db = new ClientDBContext())
+            {
+                return db.TaskInstances.First(x => x.TaskInstanceId == taskInstanceId);
+            }
+        }
+
+        public void SaveTest(Test test)
+        {
+            using (var db = new ClientDBContext())
+            {
+                db.Tests.Update(test);
+                db.SaveChanges();
             }
         }
     }

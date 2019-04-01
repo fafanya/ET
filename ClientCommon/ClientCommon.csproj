@@ -13,4 +13,8 @@
     </PackageReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Textbook\Textbook.csproj" />
+  </ItemGroup>
+
 </Project>

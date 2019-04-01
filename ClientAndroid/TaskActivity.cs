@@ -11,14 +11,14 @@ using Android.Views;
 using Android.Widget;
 
 using Textbook;
-using Workbook;
+using ClientCommon;
 
 namespace ClientAndroid
 {
     [Activity(Label = "TaskActivity")]
     public class TaskActivity : Activity
     {
-        private Task m_Task;
+        private TaskInstance m_TaskInstance;
 
         protected override void OnCreate(Bundle savedInstanceState)
         {
@@ -29,7 +29,7 @@ namespace ClientAndroid
             AddFormulaItem();
 
             TextView tv = FindViewById<TextView>(Resource.Id.tvNativeLangText);
-            tv.Text = m_Task.NativeLangText;
+            tv.Text = m_TaskInstance.Task.Text;
 
             Button btnTaskOK = FindViewById<Button>(Resource.Id.btnTaskOK);
             btnTaskOK.Click += BtnTaskOK_Click;
@@ -62,10 +62,10 @@ namespace ClientAndroid
 
         private void InitTask()
         {
-            int taskID = Intent.GetIntExtra("A_TASK_ID", 0);
-            if(taskID != 0)
+            int taskInstanceId = Intent.GetIntExtra("A_TASK_ID", 0);
+            if(taskInstanceId != 0)
             {
-                m_Task = TaskDB.Instance.TaskList.First(x => x.ID == taskID);
+                m_TaskInstance = DBManager.Instance.GetTaskInstance(taskInstanceId);
             }
         }
 

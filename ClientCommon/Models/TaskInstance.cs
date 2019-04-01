@@ -8,6 +8,8 @@ namespace ClientCommon
     {
         [DataMember]
         public int TaskInstanceId { get; set; }
+        [DataMember]
+        public int SeqNo { get; set; }
 
         [DataMember]
         public int TestId { get; set; }

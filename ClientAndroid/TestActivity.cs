@@ -11,7 +11,6 @@ using Android.Views;
 using Android.Widget;
 
 using Textbook;
-using Workbook;
 using ClientCommon;
 
 namespace ClientAndroid
@@ -19,8 +18,8 @@ namespace ClientAndroid
     [Activity(Label = "TestActivity")]
     public class TestActivity : Activity
     {
-        private Workbook.Test m_Test;
-        private IEnumerator<Workbook.Task> m_TaskEnumerator;
+        private Test m_Test;
+        private IEnumerator<TaskInstance> m_TaskEnumerator;
 
         protected override void OnCreate(Bundle savedInstanceState)
         {
@@ -48,7 +47,7 @@ namespace ClientAndroid
                 }
                 else
                 {
-                    SaveTestResults();
+                    DBManager.Instance.SaveTest(m_Test);
                 }
             }
             SetResult(resultCode);
@@ -57,8 +56,8 @@ namespace ClientAndroid
 
         private void InitTest()
         {
-            m_Test = TestGenerator.Generate();
-            m_TaskEnumerator = m_Test.TaskList.GetEnumerator();
+            m_Test = DBManager.Instance.GenerateTest();
+            m_TaskEnumerator = m_Test.TaskInstances.GetEnumerator();
         }
 
         private bool ShowTask()
@@ -66,18 +65,12 @@ namespace ClientAndroid
             bool isContinue = m_TaskEnumerator.MoveNext();
             if (isContinue)
             {
-                Workbook.Task task = m_TaskEnumerator.Current;
+                TaskInstance task = m_TaskEnumerator.Current;
                 Intent intent = new Intent(this, typeof(TaskActivity));
-                intent.PutExtra("A_TASK_ID", task.ID);
-                StartActivityForResult(intent, task.ID);
+                intent.PutExtra("A_TASK_ID", task.TaskInstanceId);
+                StartActivityForResult(intent, task.TaskInstanceId);
             }
             return isContinue;
-        }
-
-        private void SaveTestResults()
-        {
-            ClientCommon.Test tr = new ClientCommon.Test();
-            DBManager.Instance.SaveTestResults(tr);
         }
     }
 }

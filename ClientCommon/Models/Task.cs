@@ -10,8 +10,6 @@ namespace ClientCommon
         public int TaskId { get; set; }
         [DataMember]
         public string Text { get; set; }
-        [DataMember]
-        public int SeqNo { get; set; }
 
         [DataMember]
         public int TaskTypeId { get; set; }
