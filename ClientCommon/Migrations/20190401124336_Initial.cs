@@ -8,6 +8,19 @@ namespace ClientCommon.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
+                name: "TaskItemTypes",
+                columns: table => new
+                {
+                    TaskItemTypeId = table.Column<int>(nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Name = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_TaskItemTypes", x => x.TaskItemTypeId);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "TaskTypes",
                 columns: table => new
                 {
@@ -42,6 +55,7 @@ namespace ClientCommon.Migrations
                     TaskId = table.Column<int>(nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     Text = table.Column<string>(nullable: true),
+                    SeqNo = table.Column<int>(nullable: false),
                     TaskTypeId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
@@ -73,26 +87,6 @@ namespace ClientCommon.Migrations
                         column: x => x.UserId,
                         principalTable: "Users",
                         principalColumn: "UserId",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "TaskItemGroups",
-                columns: table => new
-                {
-                    TaskItemGroupId = table.Column<int>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    Name = table.Column<int>(nullable: false),
-                    TaskId = table.Column<int>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_TaskItemGroups", x => x.TaskItemGroupId);
-                    table.ForeignKey(
-                        name: "FK_TaskItemGroups_Tasks_TaskId",
-                        column: x => x.TaskId,
-                        principalTable: "Tasks",
-                        principalColumn: "TaskId",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -131,12 +125,20 @@ namespace ClientCommon.Migrations
                     SeqNo = table.Column<int>(nullable: false),
                     ValueInt = table.Column<int>(nullable: false),
                     ValueString = table.Column<string>(nullable: true),
-                    TaskItemGroupId = table.Column<int>(nullable: false),
-                    TaskId = table.Column<int>(nullable: true)
+                    TaskId = table.Column<int>(nullable: true),
+                    TaskInstanceId = table.Column<int>(nullable: true),
+                    ParentId = table.Column<int>(nullable: true),
+                    TaskItemTypeId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_TaskItems", x => x.TaskItemId);
+                    table.ForeignKey(
+                        name: "FK_TaskItems_TaskItems_ParentId",
+                        column: x => x.ParentId,
+                        principalTable: "TaskItems",
+                        principalColumn: "TaskItemId",
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_TaskItems_Tasks_TaskId",
                         column: x => x.TaskId,
@@ -144,39 +146,16 @@ namespace ClientCommon.Migrations
                         principalColumn: "TaskId",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_TaskItems_TaskItemGroups_TaskItemGroupId",
-                        column: x => x.TaskItemGroupId,
-                        principalTable: "TaskItemGroups",
-                        principalColumn: "TaskItemGroupId",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "TaskItemInstances",
-                columns: table => new
-                {
-                    TaskItemInstanceId = table.Column<int>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    SeqNo = table.Column<int>(nullable: false),
-                    ValueInt = table.Column<int>(nullable: false),
-                    ValueString = table.Column<string>(nullable: true),
-                    TaskItemGroupId = table.Column<int>(nullable: false),
-                    TaskInstanceId = table.Column<int>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_TaskItemInstances", x => x.TaskItemInstanceId);
-                    table.ForeignKey(
-                        name: "FK_TaskItemInstances_TaskInstances_TaskInstanceId",
+                        name: "FK_TaskItems_TaskInstances_TaskInstanceId",
                         column: x => x.TaskInstanceId,
                         principalTable: "TaskInstances",
                         principalColumn: "TaskInstanceId",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_TaskItemInstances_TaskItemGroups_TaskItemGroupId",
-                        column: x => x.TaskItemGroupId,
-                        principalTable: "TaskItemGroups",
-                        principalColumn: "TaskItemGroupId",
+                        name: "FK_TaskItems_TaskItemTypes_TaskItemTypeId",
+                        column: x => x.TaskItemTypeId,
+                        principalTable: "TaskItemTypes",
+                        principalColumn: "TaskItemTypeId",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -191,19 +170,9 @@ namespace ClientCommon.Migrations
                 column: "TestId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_TaskItemGroups_TaskId",
-                table: "TaskItemGroups",
-                column: "TaskId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_TaskItemInstances_TaskInstanceId",
-                table: "TaskItemInstances",
-                column: "TaskInstanceId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_TaskItemInstances_TaskItemGroupId",
-                table: "TaskItemInstances",
-                column: "TaskItemGroupId");
+                name: "IX_TaskItems_ParentId",
+                table: "TaskItems",
+                column: "ParentId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_TaskItems_TaskId",
@@ -211,9 +180,14 @@ namespace ClientCommon.Migrations
                 column: "TaskId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_TaskItems_TaskItemGroupId",
+                name: "IX_TaskItems_TaskInstanceId",
                 table: "TaskItems",
-                column: "TaskItemGroupId");
+                column: "TaskInstanceId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_TaskItems_TaskItemTypeId",
+                table: "TaskItems",
+                column: "TaskItemTypeId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Tasks_TaskTypeId",
@@ -229,28 +203,25 @@ namespace ClientCommon.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "TaskItemInstances");
-
-            migrationBuilder.DropTable(
                 name: "TaskItems");
 
             migrationBuilder.DropTable(
                 name: "TaskInstances");
 
             migrationBuilder.DropTable(
-                name: "TaskItemGroups");
-
-            migrationBuilder.DropTable(
-                name: "Tests");
+                name: "TaskItemTypes");
 
             migrationBuilder.DropTable(
                 name: "Tasks");
 
             migrationBuilder.DropTable(
-                name: "Users");
+                name: "Tests");
 
             migrationBuilder.DropTable(
                 name: "TaskTypes");
+
+            migrationBuilder.DropTable(
+                name: "Users");
         }
     }
 }

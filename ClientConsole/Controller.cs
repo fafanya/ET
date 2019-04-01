@@ -155,10 +155,10 @@ namespace ClientConsole
                     if (output == "1")
                     {
                         Console.WriteLine("Выберите часть предложения:");
-                        Console.WriteLine("1." + FormulaItem.Subject.FormulaItemTypeID);
-                        Console.WriteLine("2." + FormulaItem.ModalVerb.FormulaItemTypeID);
-                        Console.WriteLine("3." + FormulaItem.NotionalVerb.FormulaItemTypeID);
-                        Console.WriteLine("4." + FormulaItem.OtherPart.FormulaItemTypeID);
+                        Console.WriteLine("1." + FormulaItem.Subject.FormulaItemTypeUID);
+                        Console.WriteLine("2." + FormulaItem.ModalVerb.FormulaItemTypeUID);
+                        Console.WriteLine("3." + FormulaItem.NotionalVerb.FormulaItemTypeUID);
+                        Console.WriteLine("4." + FormulaItem.OtherPart.FormulaItemTypeUID);
 
                         bool isPartValid = false;
                         string partOutput = null;
@@ -177,15 +177,15 @@ namespace ClientConsole
 
                         if (partOutput == "1")
                         {
-                            curentFormula.Add(FormulaItem.Subject.FormulaItemTypeID);
+                            curentFormula.Add(FormulaItem.Subject.FormulaItemTypeUID);
                         }
                         else if (partOutput == "2")
                         {
                             Console.WriteLine("Выберите модальный глагол:");
-                            Console.WriteLine("1." + ModalVerbFormulaItem.Do.ModalVerbFormulaItemID);
-                            Console.WriteLine("2." + ModalVerbFormulaItem.Was.ModalVerbFormulaItemID);
-                            Console.WriteLine("3." + ModalVerbFormulaItem.Were.ModalVerbFormulaItemID);
-                            Console.WriteLine("4." + ModalVerbFormulaItem.Been.ModalVerbFormulaItemID);
+                            Console.WriteLine("1." + ModalVerbFormulaItem.Do.ModalVerbFormulaItemUID);
+                            Console.WriteLine("2." + ModalVerbFormulaItem.Was.ModalVerbFormulaItemUID);
+                            Console.WriteLine("3." + ModalVerbFormulaItem.Were.ModalVerbFormulaItemUID);
+                            Console.WriteLine("4." + ModalVerbFormulaItem.Been.ModalVerbFormulaItemUID);
 
                             bool isRPartValid = false;
                             string partROutput = null;
@@ -204,28 +204,28 @@ namespace ClientConsole
 
                             if(partROutput == "1")
                             {
-                                curentFormula.Add(ModalVerbFormulaItem.Do.ModalVerbFormulaItemID);
+                                curentFormula.Add(ModalVerbFormulaItem.Do.ModalVerbFormulaItemUID);
                             }
                             else if (partROutput == "2")
                             {
-                                curentFormula.Add(ModalVerbFormulaItem.Was.ModalVerbFormulaItemID);
+                                curentFormula.Add(ModalVerbFormulaItem.Was.ModalVerbFormulaItemUID);
                             }
                             else if (partROutput == "3")
                             {
-                                curentFormula.Add(ModalVerbFormulaItem.Were.ModalVerbFormulaItemID);
+                                curentFormula.Add(ModalVerbFormulaItem.Were.ModalVerbFormulaItemUID);
                             }
                             else if (partROutput == "4")
                             {
-                                curentFormula.Add(ModalVerbFormulaItem.Been.ModalVerbFormulaItemID);
+                                curentFormula.Add(ModalVerbFormulaItem.Been.ModalVerbFormulaItemUID);
                             }
                         }
                         else if (partOutput == "3")
                         {
                             Console.WriteLine("Выберите вид смыслового глагола:");
-                            Console.WriteLine("1." + NotionalVerbFormulaItem.V.NotionalVerbFormulaItemID);
-                            Console.WriteLine("2." + NotionalVerbFormulaItem.Ves.NotionalVerbFormulaItemID);
-                            Console.WriteLine("3." + NotionalVerbFormulaItem.Vs.NotionalVerbFormulaItemID);
-                            Console.WriteLine("4." + NotionalVerbFormulaItem.Ving.NotionalVerbFormulaItemID);
+                            Console.WriteLine("1." + NotionalVerbFormulaItem.V.NotionalVerbFormulaItemUID);
+                            Console.WriteLine("2." + NotionalVerbFormulaItem.Ves.NotionalVerbFormulaItemUID);
+                            Console.WriteLine("3." + NotionalVerbFormulaItem.Vs.NotionalVerbFormulaItemUID);
+                            Console.WriteLine("4." + NotionalVerbFormulaItem.Ving.NotionalVerbFormulaItemUID);
 
                             bool isRPartValid = false;
                             string partROutput = null;
@@ -244,24 +244,24 @@ namespace ClientConsole
 
                             if (partROutput == "1")
                             {
-                                curentFormula.Add(NotionalVerbFormulaItem.V.NotionalVerbFormulaItemID);
+                                curentFormula.Add(NotionalVerbFormulaItem.V.NotionalVerbFormulaItemUID);
                             }
                             else if (partROutput == "2")
                             {
-                                curentFormula.Add(NotionalVerbFormulaItem.Ves.NotionalVerbFormulaItemID);
+                                curentFormula.Add(NotionalVerbFormulaItem.Ves.NotionalVerbFormulaItemUID);
                             }
                             else if (partROutput == "3")
                             {
-                                curentFormula.Add(NotionalVerbFormulaItem.Vs.NotionalVerbFormulaItemID);
+                                curentFormula.Add(NotionalVerbFormulaItem.Vs.NotionalVerbFormulaItemUID);
                             }
                             else if (partROutput == "4")
                             {
-                                curentFormula.Add(NotionalVerbFormulaItem.Ving.NotionalVerbFormulaItemID);
+                                curentFormula.Add(NotionalVerbFormulaItem.Ving.NotionalVerbFormulaItemUID);
                             }
                         }
                         else if (partOutput == "4")
                         {
-                            curentFormula.Add(FormulaItem.OtherPart.FormulaItemTypeID);
+                            curentFormula.Add(FormulaItem.OtherPart.FormulaItemTypeUID);
                         }
                     }
                     else if(output == "2")
@@ -284,16 +284,16 @@ namespace ClientConsole
                         if(fi is ModalVerbFormulaItem)
                         {
                             var tfi = fi as ModalVerbFormulaItem;
-                            cfData = tfi.ModalVerbFormulaItemID;
+                            cfData = tfi.ModalVerbFormulaItemUID;
                         }
                         else if(fi is NotionalVerbFormulaItem)
                         {
                             var tfi = fi as NotionalVerbFormulaItem;
-                            cfData = tfi.NotionalVerbFormulaItemID;
+                            cfData = tfi.NotionalVerbFormulaItemUID;
                         }
                         else
                         {
-                            cfData = fi.FormulaItemTypeID;
+                            cfData = fi.FormulaItemTypeUID;
                         }
                         if (cfData != curentFormula[i])
                         {

@@ -21,6 +21,8 @@ namespace ClientCommon.Migrations
                     b.Property<int>("TaskId")
                         .ValueGeneratedOnAdd();
 
+                    b.Property<int>("SeqNo");
+
                     b.Property<int>("TaskTypeId");
 
                     b.Property<string>("Text");
@@ -55,11 +57,15 @@ namespace ClientCommon.Migrations
                     b.Property<int>("TaskItemId")
                         .ValueGeneratedOnAdd();
 
+                    b.Property<int?>("ParentId");
+
                     b.Property<int>("SeqNo");
 
                     b.Property<int?>("TaskId");
 
-                    b.Property<int>("TaskItemGroupId");
+                    b.Property<int?>("TaskInstanceId");
+
+                    b.Property<int>("TaskItemTypeId");
 
                     b.Property<int>("ValueInt");
 
@@ -67,51 +73,27 @@ namespace ClientCommon.Migrations
 
                     b.HasKey("TaskItemId");
 
+                    b.HasIndex("ParentId");
+
                     b.HasIndex("TaskId");
 
-                    b.HasIndex("TaskItemGroupId");
+                    b.HasIndex("TaskInstanceId");
+
+                    b.HasIndex("TaskItemTypeId");
 
                     b.ToTable("TaskItems");
                 });
 
-            modelBuilder.Entity("ClientCommon.TaskItemGroup", b =>
+            modelBuilder.Entity("ClientCommon.TaskItemType", b =>
                 {
-                    b.Property<int>("TaskItemGroupId")
+                    b.Property<int>("TaskItemTypeId")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<int>("Name");
+                    b.Property<string>("Name");
 
-                    b.Property<int>("TaskId");
+                    b.HasKey("TaskItemTypeId");
 
-                    b.HasKey("TaskItemGroupId");
-
-                    b.HasIndex("TaskId");
-
-                    b.ToTable("TaskItemGroups");
-                });
-
-            modelBuilder.Entity("ClientCommon.TaskItemInstance", b =>
-                {
-                    b.Property<int>("TaskItemInstanceId")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<int>("SeqNo");
-
-                    b.Property<int?>("TaskInstanceId");
-
-                    b.Property<int>("TaskItemGroupId");
-
-                    b.Property<int>("ValueInt");
-
-                    b.Property<string>("ValueString");
-
-                    b.HasKey("TaskItemInstanceId");
-
-                    b.HasIndex("TaskInstanceId");
-
-                    b.HasIndex("TaskItemGroupId");
-
-                    b.ToTable("TaskItemInstances");
+                    b.ToTable("TaskItemTypes");
                 });
 
             modelBuilder.Entity("ClientCommon.TaskType", b =>
@@ -183,33 +165,21 @@ namespace ClientCommon.Migrations
 
             modelBuilder.Entity("ClientCommon.TaskItem", b =>
                 {
-                    b.HasOne("ClientCommon.Task")
+                    b.HasOne("ClientCommon.TaskItem", "Parent")
+                        .WithMany()
+                        .HasForeignKey("ParentId");
+
+                    b.HasOne("ClientCommon.Task", "Task")
                         .WithMany("TaskItems")
                         .HasForeignKey("TaskId");
 
-                    b.HasOne("ClientCommon.TaskItemGroup", "TaskItemGroup")
+                    b.HasOne("ClientCommon.TaskInstance", "TaskInstance")
                         .WithMany("TaskItems")
-                        .HasForeignKey("TaskItemGroupId")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
-
-            modelBuilder.Entity("ClientCommon.TaskItemGroup", b =>
-                {
-                    b.HasOne("ClientCommon.Task", "Task")
-                        .WithMany()
-                        .HasForeignKey("TaskId")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
-
-            modelBuilder.Entity("ClientCommon.TaskItemInstance", b =>
-                {
-                    b.HasOne("ClientCommon.TaskInstance")
-                        .WithMany("TaskItemInstances")
                         .HasForeignKey("TaskInstanceId");
 
-                    b.HasOne("ClientCommon.TaskItemGroup", "TaskItemGroup")
-                        .WithMany("TaskItemInstances")
-                        .HasForeignKey("TaskItemGroupId")
+                    b.HasOne("ClientCommon.TaskItemType", "TaskItemType")
+                        .WithMany("TaskItems")
+                        .HasForeignKey("TaskItemTypeId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 

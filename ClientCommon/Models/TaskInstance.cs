@@ -20,6 +20,6 @@ namespace ClientCommon
         public Task Task { get; set; }
 
         [DataMember]
-        public ICollection<TaskItemInstance> TaskItemInstances { get; set; }
+        public ICollection<TaskItem> TaskItems { get; set; }
     }
 }

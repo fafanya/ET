@@ -6,6 +6,9 @@ namespace ClientCommon
     [DataContract]
     public class TaskType
     {
+        [IgnoreDataMember]
+        public const int ttChooseSentenceVerbTense = 1;
+
         [DataMember]
         public int TaskTypeId { get; set; }
         [DataMember]

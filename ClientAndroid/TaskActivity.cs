@@ -119,10 +119,10 @@ namespace ClientAndroid
             string[] sentencePartList = new string[]
             {
                 "-",
-                FormulaItem.ModalVerb.FormulaItemTypeID,
-                FormulaItem.NotionalVerb.FormulaItemTypeID,
-                FormulaItem.Subject.FormulaItemTypeID,
-                FormulaItem.OtherPart.FormulaItemTypeID
+                FormulaItem.ModalVerb.FormulaItemTypeUID,
+                FormulaItem.NotionalVerb.FormulaItemTypeUID,
+                FormulaItem.Subject.FormulaItemTypeUID,
+                FormulaItem.OtherPart.FormulaItemTypeUID
             };
             Spinner spSentenceItem = new Spinner(this)
             {
@@ -161,17 +161,17 @@ namespace ClientAndroid
             }
             if(e.Position == 1)
             {
-                sentencePartList.Add(ModalVerbFormulaItem.Been.ModalVerbFormulaItemID);
-                sentencePartList.Add(ModalVerbFormulaItem.Was.ModalVerbFormulaItemID);
-                sentencePartList.Add(ModalVerbFormulaItem.Were.ModalVerbFormulaItemID);
-                sentencePartList.Add(ModalVerbFormulaItem.Do.ModalVerbFormulaItemID);
+                sentencePartList.Add(ModalVerbFormulaItem.Been.ModalVerbFormulaItemUID);
+                sentencePartList.Add(ModalVerbFormulaItem.Was.ModalVerbFormulaItemUID);
+                sentencePartList.Add(ModalVerbFormulaItem.Were.ModalVerbFormulaItemUID);
+                sentencePartList.Add(ModalVerbFormulaItem.Do.ModalVerbFormulaItemUID);
             }
             else if(e.Position == 2)
             {
-                sentencePartList.Add(NotionalVerbFormulaItem.V.NotionalVerbFormulaItemID);
-                sentencePartList.Add(NotionalVerbFormulaItem.Vs.NotionalVerbFormulaItemID);
-                sentencePartList.Add(NotionalVerbFormulaItem.Ves.NotionalVerbFormulaItemID);
-                sentencePartList.Add(NotionalVerbFormulaItem.Ving.NotionalVerbFormulaItemID);
+                sentencePartList.Add(NotionalVerbFormulaItem.V.NotionalVerbFormulaItemUID);
+                sentencePartList.Add(NotionalVerbFormulaItem.Vs.NotionalVerbFormulaItemUID);
+                sentencePartList.Add(NotionalVerbFormulaItem.Ves.NotionalVerbFormulaItemUID);
+                sentencePartList.Add(NotionalVerbFormulaItem.Ving.NotionalVerbFormulaItemUID);
             }
             else if(e.Position == 3)
             {
