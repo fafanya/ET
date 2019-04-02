@@ -74,15 +74,7 @@ namespace ClientAndroid
             Spinner spVerbTense = FindViewById<Spinner>(Resource.Id.spVerbTense);
             spVerbTense.ItemSelected += SpVerbTense_ItemSelected;
 
-            Type t = typeof(VerbTense);
-            List<string> verbTenseList = new List<string>();
-            var v = (int[])(Enum.GetValues(t));
-            for (int i = 1; i <= v.Length; i++)
-            {
-                verbTenseList.Add(Enum.GetName(t, v[i - 1]));
-            }
-
-            var adapter = new ArrayAdapter(this, Resource.Layout.support_simple_spinner_dropdown_item, verbTenseList);
+            var adapter = new ArrayAdapter(this, Resource.Layout.support_simple_spinner_dropdown_item, VerbTense.List.Select(x => x.Name).ToArray());
             spVerbTense.Adapter = adapter;
         }
 
@@ -91,15 +83,7 @@ namespace ClientAndroid
             Spinner spVerbAspect = FindViewById<Spinner>(Resource.Id.spVerbAspect);
             spVerbAspect.ItemSelected += SpVerbAspect_ItemSelected;
 
-            Type t = typeof(VerbAspect);
-            List<string> verbAspectList = new List<string>();
-            var v = (int[])(Enum.GetValues(t));
-            for (int i = 1; i <= v.Length; i++)
-            {
-                verbAspectList.Add(Enum.GetName(t, v[i - 1]));
-            }
-
-            var adapter = new ArrayAdapter(this, Resource.Layout.support_simple_spinner_dropdown_item, verbAspectList);
+            var adapter = new ArrayAdapter(this, Resource.Layout.support_simple_spinner_dropdown_item, VerbAspect.List.Select(x => x.Name).ToArray());
             spVerbAspect.Adapter = adapter;
         }
 
@@ -116,19 +100,12 @@ namespace ClientAndroid
                 Weight = 1
             };
 
-            string[] sentencePartList = new string[]
-            {
-                "-",
-                FormulaItem.ModalVerb.FormulaItemTypeUID,
-                FormulaItem.NotionalVerb.FormulaItemTypeUID,
-                FormulaItem.Subject.FormulaItemTypeUID,
-                FormulaItem.OtherPart.FormulaItemTypeUID
-            };
             Spinner spSentenceItem = new Spinner(this)
             {
                 LayoutParameters = lp
             };
-            var adapter = new ArrayAdapter(this, Resource.Layout.support_simple_spinner_dropdown_item, sentencePartList);
+            var adapter = new ArrayAdapter(this, Resource.Layout.support_simple_spinner_dropdown_item, 
+                SentencePart.List.Select(x=>x.Name).ToArray());
             spSentenceItem.Adapter = adapter;
             spSentenceItem.ItemSelected += SpSentenceItem_ItemSelected;
             ll.AddView(spSentenceItem);
@@ -154,32 +131,18 @@ namespace ClientAndroid
         {
             LinearLayout ll = (sender as Spinner).Parent as LinearLayout;
             Spinner sp = ll.GetChildAt(1) as Spinner;
-            List<string> sentencePartList = new List<string>() { "-" };
-            if (e.Position == 0)
+            List<string> sentencePartList;
+            if (e.Position == 1)
             {
-                
+                sentencePartList = ModalVerb.List.Select(x => x.Name).ToList();
             }
-            if(e.Position == 1)
+            else if (e.Position == 2)
             {
-                sentencePartList.Add(ModalVerbFormulaItem.Been.ModalVerbFormulaItemUID);
-                sentencePartList.Add(ModalVerbFormulaItem.Was.ModalVerbFormulaItemUID);
-                sentencePartList.Add(ModalVerbFormulaItem.Were.ModalVerbFormulaItemUID);
-                sentencePartList.Add(ModalVerbFormulaItem.Do.ModalVerbFormulaItemUID);
+                sentencePartList = NotionalVerb.List.Select(x => x.Name).ToList();
             }
-            else if(e.Position == 2)
+            else
             {
-                sentencePartList.Add(NotionalVerbFormulaItem.V.NotionalVerbFormulaItemUID);
-                sentencePartList.Add(NotionalVerbFormulaItem.Vs.NotionalVerbFormulaItemUID);
-                sentencePartList.Add(NotionalVerbFormulaItem.Ves.NotionalVerbFormulaItemUID);
-                sentencePartList.Add(NotionalVerbFormulaItem.Ving.NotionalVerbFormulaItemUID);
-            }
-            else if(e.Position == 3)
-            {
-
-            }
-            else if(e.Position == 4)
-            {
-
+                sentencePartList = new List<string>() { "-" };
             }
             var adapter = new ArrayAdapter(this, Resource.Layout.support_simple_spinner_dropdown_item, sentencePartList);
             sp.Adapter = adapter;

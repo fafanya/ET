@@ -13,15 +13,19 @@ namespace ClientCommon
 
         }
 
-        public static void CheckTaskItem(TaskItem taskItem)
+        public static bool CheckTaskItem(TaskItem taskItem)
         {
-            IEnumerable<TaskItem> correctTaskItems = taskItem.Task.
+            IEnumerable<TaskItem> correctTaskItems = taskItem.TaskInstance.Task.
                 TaskItems.Where(x => x.TaskItemTypeId == taskItem.TaskItemTypeId);
 
             foreach(TaskItem correctTaskItem in correctTaskItems)
             {
-
+                if(IsCorrect(taskItem, correctTaskItem))
+                {
+                    return true;
+                }
             }
+            return false;
         }
 
         private static bool IsCorrect(TaskItem tiAnswer, TaskItem tiCorrect)

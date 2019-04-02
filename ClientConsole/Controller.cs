@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Text;
 using System.Linq;
-using System.Collections;
 using System.Collections.Generic;
-
 using ClientCommon;
 using Textbook;
 
@@ -48,24 +45,10 @@ namespace ClientConsole
             Console.WriteLine(ti.Task.Text);
             Console.WriteLine();
 
-            TaskItem taskItem = ti.Task.TaskItems.First(x => x.TaskItemTypeId == TaskItemType.itChooseTense);
-            int answer = RunSelectSubTask(typeof(VerbTense), "время", taskItem.ValueInt);
-            TaskItem parentTaskItem = new TaskItem
-            {
-                TaskItemTypeId = TaskItemType.itChooseTense,
-                ValueInt = answer
-            };
-            ti.TaskItems.Add(parentTaskItem);
+            RunSelectSubTask(VerbTense.List, "время", TaskItemType.itChooseTense, ti);
             Console.WriteLine();
 
-            taskItem = ti.Task.TaskItems.First(x => x.TaskItemTypeId == TaskItemType.itChooseAspect);
-            answer = RunSelectSubTask(typeof(VerbAspect), "вид времени", taskItem.ValueInt);
-            parentTaskItem = new TaskItem
-            {
-                TaskItemTypeId = TaskItemType.itChooseAspect,
-                ValueInt = answer
-            };
-            ti.TaskItems.Add(parentTaskItem);
+            RunSelectSubTask(VerbAspect.List, "вид времени", TaskItemType.itChooseAspect, ti);
             Console.WriteLine();
 
             RunFormulaSubTask(ti);
@@ -78,13 +61,15 @@ namespace ClientConsole
             Console.WriteLine("------------------------------------");
         }
 
-        private static int RunSelectSubTask(Type t, string header, object correctValue)
+        private static void RunSelectSubTask(IEnumerable<LObject> lObjects, string header, int taskItemTypeId, TaskInstance ti)
         {
+            TaskItem taskItem = ti.Task.TaskItems.First(x => x.TaskItemTypeId == taskItemTypeId);
+            object correctValue = taskItem.ValueInt;
+
             Console.WriteLine("Выберите "+ header + ":");
-            var v = (int[])(Enum.GetValues(t));
-            for (int i = 1; i <= v.Length; i++)
+            foreach(LObject lObject in lObjects)
             {
-                Console.WriteLine(i.ToString() + "." + Enum.GetName(t, v[i - 1]));
+                Console.WriteLine(lObject.Id + "." + lObject.Name);
             }
             int index = 0;
             bool isValid = false;
@@ -94,67 +79,48 @@ namespace ClientConsole
                 string output = Console.ReadLine();
                 if (int.TryParse(output, out index))
                 {
-                    index--;
-                    if (index >= 0 && index < v.Length)
+                    if (index >= 0 && index < lObjects.Count())
                     {
                         isValid = true;
                     }
                 }
             }
-            string correctAnswer = Enum.GetName(t, correctValue);
-            string userAnsewer = Enum.GetName(t, index);
 
-            bool isCorrect = false;
-            if (correctAnswer == userAnsewer)
+            TaskItem parentTaskItem = new TaskItem
             {
-                isCorrect = true;
-            }
+                TaskItemTypeId = taskItemTypeId,
+                ValueInt = index,
+                TaskInstance = ti
+            };
+            ti.TaskItems.Add(parentTaskItem);
 
+            bool isCorrect = TaskChecker.CheckTaskItem(parentTaskItem);
             ShowResult(isCorrect);
-            return index;
         }
 
         private static void RunTranslateSubTask(TaskInstance taskInstance)
         {
             Console.WriteLine("Переведите предложение:");
-
             string userAnswer = Console.ReadLine();
-            string tempUserAnswer = userAnswer.Replace(".", "");
-            tempUserAnswer = tempUserAnswer.Replace(" ", "");
-            tempUserAnswer = tempUserAnswer.Replace(",", "");
-
-            bool isCorrect = false;
-            foreach (var ti in taskInstance.Task.TaskItems.Where(x => x.TaskItemTypeId == TaskItemType.itTranslate))
-            {
-                foreach (var tiChild in ti.Children)
-                {
-                    string translation = tiChild.ValueString.Replace(".", "");
-                    translation = translation.Replace(" ", "");
-                    translation = translation.Replace(",", "");
-
-                    if (tempUserAnswer == translation)
-                    {
-                        isCorrect = true;
-                        break;
-                    }
-                }
-            }
-
-            ShowResult(isCorrect);
 
             TaskItem parentTaskItem = new TaskItem
             {
                 TaskItemTypeId = TaskItemType.itTranslate,
-                Children = new List<TaskItem>()
+                Children = new List<TaskItem>(),
+                TaskInstance = taskInstance
             };
             taskInstance.TaskItems.Add(parentTaskItem);
 
             TaskItem taskItem = new TaskItem
             {
                 TaskItemTypeId = TaskItemType.itTranslate,
-                ValueString = userAnswer
+                ValueString = userAnswer,
+                SeqNo = 1
             };
             parentTaskItem.Children.Add(taskItem);
+
+            bool isCorrect = TaskChecker.CheckTaskItem(parentTaskItem);
+            ShowResult(isCorrect);
         }
 
         private static void RunFormulaSubTask(TaskInstance taskInstance)
@@ -165,14 +131,13 @@ namespace ClientConsole
                 formulaList.Count() == 0)
                 return;
 
-            List<string> curentFormulaUID = new List<string>();
             List<int> curentFormulaID = new List<int>();
 
             Console.WriteLine("Составьте формулу:");
             bool isContinue = true;
             while (isContinue)
             {
-                Console.WriteLine("Текущая формула: " + GetFormula(curentFormulaUID));
+                Console.WriteLine("Текущая формула: " + GetFormula(curentFormulaID));
                 bool isValid = false;
                 string output = null;
                 while (!isValid)
@@ -188,16 +153,17 @@ namespace ClientConsole
                     }
                 }
 
-
                 if (!string.IsNullOrWhiteSpace(output))
                 {
                     if (output == "1")
                     {
                         Console.WriteLine("Выберите часть предложения:");
-                        Console.WriteLine("1." + FormulaItem.Subject.FormulaItemTypeUID);
-                        Console.WriteLine("2." + FormulaItem.ModalVerb.FormulaItemTypeUID);
-                        Console.WriteLine("3." + FormulaItem.NotionalVerb.FormulaItemTypeUID);
-                        Console.WriteLine("4." + FormulaItem.OtherPart.FormulaItemTypeUID);
+                        int spSeqNo = 0;
+                        foreach(SentencePart sp in SentencePart.List)
+                        {
+                            Console.WriteLine(spSeqNo + "." + sp.Name);
+                            spSeqNo++;
+                        }
 
                         bool isPartValid = false;
                         string partOutput = null;
@@ -216,16 +182,17 @@ namespace ClientConsole
 
                         if (partOutput == "1")
                         {
-                            curentFormulaUID.Add(FormulaItem.Subject.FormulaItemTypeUID);
-                            curentFormulaID.Add(FormulaItem.Subject.FormulaItemTypeID);
+                            curentFormulaID.Add(SentencePart.spSubject);
                         }
                         else if (partOutput == "2")
                         {
                             Console.WriteLine("Выберите модальный глагол:");
-                            Console.WriteLine("1." + ModalVerbFormulaItem.Do.ModalVerbFormulaItemUID);
-                            Console.WriteLine("2." + ModalVerbFormulaItem.Was.ModalVerbFormulaItemUID);
-                            Console.WriteLine("3." + ModalVerbFormulaItem.Were.ModalVerbFormulaItemUID);
-                            Console.WriteLine("4." + ModalVerbFormulaItem.Been.ModalVerbFormulaItemUID);
+                            int mvSeqNo = 0;
+                            foreach (ModalVerb mv in ModalVerb.List)
+                            {
+                                Console.WriteLine(mvSeqNo + "." + mv.Name);
+                                mvSeqNo++;
+                            }
 
                             bool isRPartValid = false;
                             string partROutput = null;
@@ -244,32 +211,30 @@ namespace ClientConsole
 
                             if(partROutput == "1")
                             {
-                                curentFormulaUID.Add(ModalVerbFormulaItem.Do.ModalVerbFormulaItemUID);
-                                curentFormulaID.Add(ModalVerbFormulaItem.Do.ModalVerbFormulaItemID);
+                                curentFormulaID.Add(ModalVerb.mvDo);
                             }
                             else if (partROutput == "2")
                             {
-                                curentFormulaUID.Add(ModalVerbFormulaItem.Was.ModalVerbFormulaItemUID);
-                                curentFormulaID.Add(ModalVerbFormulaItem.Was.ModalVerbFormulaItemID);
+                                curentFormulaID.Add(ModalVerb.mvWas);
                             }
                             else if (partROutput == "3")
                             {
-                                curentFormulaUID.Add(ModalVerbFormulaItem.Were.ModalVerbFormulaItemUID);
-                                curentFormulaID.Add(ModalVerbFormulaItem.Were.ModalVerbFormulaItemID);
+                                curentFormulaID.Add(ModalVerb.mvWere);
                             }
                             else if (partROutput == "4")
                             {
-                                curentFormulaUID.Add(ModalVerbFormulaItem.Been.ModalVerbFormulaItemUID);
-                                curentFormulaID.Add(ModalVerbFormulaItem.Been.ModalVerbFormulaItemID);
+                                curentFormulaID.Add(ModalVerb.mvBeen);
                             }
                         }
                         else if (partOutput == "3")
                         {
                             Console.WriteLine("Выберите вид смыслового глагола:");
-                            Console.WriteLine("1." + NotionalVerbFormulaItem.V.NotionalVerbFormulaItemUID);
-                            Console.WriteLine("2." + NotionalVerbFormulaItem.Ves.NotionalVerbFormulaItemUID);
-                            Console.WriteLine("3." + NotionalVerbFormulaItem.Vs.NotionalVerbFormulaItemUID);
-                            Console.WriteLine("4." + NotionalVerbFormulaItem.Ving.NotionalVerbFormulaItemUID);
+                            int nvSeqNo = 0;
+                            foreach (NotionalVerb mv in NotionalVerb.List)
+                            {
+                                Console.WriteLine(nvSeqNo + "." + mv.Name);
+                                nvSeqNo++;
+                            }
 
                             bool isRPartValid = false;
                             string partROutput = null;
@@ -288,29 +253,24 @@ namespace ClientConsole
 
                             if (partROutput == "1")
                             {
-                                curentFormulaUID.Add(NotionalVerbFormulaItem.V.NotionalVerbFormulaItemUID);
-                                curentFormulaID.Add(NotionalVerbFormulaItem.V.NotionalVerbFormulaItemID);
+                                curentFormulaID.Add(NotionalVerb.nvV);
                             }
                             else if (partROutput == "2")
                             {
-                                curentFormulaUID.Add(NotionalVerbFormulaItem.Ves.NotionalVerbFormulaItemUID);
-                                curentFormulaID.Add(NotionalVerbFormulaItem.Ves.NotionalVerbFormulaItemID);
+                                curentFormulaID.Add(NotionalVerb.nvVes);
                             }
                             else if (partROutput == "3")
                             {
-                                curentFormulaUID.Add(NotionalVerbFormulaItem.Vs.NotionalVerbFormulaItemUID);
-                                curentFormulaID.Add(NotionalVerbFormulaItem.Vs.NotionalVerbFormulaItemID);
+                                curentFormulaID.Add(NotionalVerb.nvVs);
                             }
                             else if (partROutput == "4")
                             {
-                                curentFormulaUID.Add(NotionalVerbFormulaItem.Ving.NotionalVerbFormulaItemUID);
-                                curentFormulaID.Add(NotionalVerbFormulaItem.Ving.NotionalVerbFormulaItemID);
+                                curentFormulaID.Add(NotionalVerb.nvVing);
                             }
                         }
                         else if (partOutput == "4")
                         {
-                            curentFormulaUID.Add(FormulaItem.OtherPart.FormulaItemTypeUID);
-                            curentFormulaID.Add(FormulaItem.OtherPart.FormulaItemTypeID);
+                            curentFormulaID.Add(SentencePart.spOtherPart);
                         }
                     }
                     else if(output == "2")
@@ -320,38 +280,11 @@ namespace ClientConsole
                 }
             }
 
-
-
-            bool isCorrect = false;
-            foreach(var fl in formulaList)
-            {
-                if (fl.Children.Count == curentFormulaUID.Count)
-                {
-                    bool rr = true;
-                    for (int i = 0; i < curentFormulaUID.Count; i++)
-                    {
-                        string cfData = string.Empty;
-                        TaskItem fi = fl.Children.First(x => x.SeqNo-1 == i);
-                        if (fi.ValueInt != curentFormulaID[i])
-                        {
-                            rr = false; ;
-                            break;
-                        }
-                    }
-                    if (rr)
-                    {
-                        isCorrect = true;
-                        break;
-                    }
-                }
-            }
-
-            ShowResult(isCorrect);
-
             TaskItem parentTaskItem = new TaskItem
             {
                 TaskItemTypeId = TaskItemType.itMakeFormula,
-                Children = new List<TaskItem>()
+                Children = new List<TaskItem>(),
+                TaskInstance = taskInstance
             };
             taskInstance.TaskItems.Add(parentTaskItem);
 
@@ -367,14 +300,29 @@ namespace ClientConsole
                 parentTaskItem.Children.Add(taskItem);
                 j++;
             }
+
+            bool isCorrect = TaskChecker.CheckTaskItem(parentTaskItem);
+            ShowResult(isCorrect);
         }
 
-        private static string GetFormula(IEnumerable<string> formulaItemList)
+        private static string GetFormula(IEnumerable<int> formulaItemIdList)
         {
+            List<LObject> lObjects = new List<LObject>();
+            lObjects.AddRange(SentencePart.List);
+            lObjects.AddRange(ModalVerb.List);
+            lObjects.AddRange(NotionalVerb.List);
+
+            List<string> formulaItemNameList = new List<string>();
+            foreach (int formulaItemId in formulaItemIdList)
+            {
+                string formulaItemName = lObjects.First(x => x.Id == formulaItemId).Name;
+                formulaItemNameList.Add(formulaItemName);
+            }
+
             string result = string.Empty;
             result += "[ ";
 
-            string formula = string.Join(" + ", formulaItemList);
+            string formula = string.Join(" + ", formulaItemNameList);
             if (string.IsNullOrWhiteSpace(formula))
             {
                 result += "Пусто";

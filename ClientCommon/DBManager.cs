@@ -94,7 +94,7 @@ namespace ClientCommon
                 {
                     TaskId = task.TaskId,
                     TaskItemTypeId = TaskItemType.itChooseTense,
-                    ValueInt = (int)VerbTense.Present,
+                    ValueInt = VerbTense.vtPresent,
                     SeqNo = 1
                 };
                 db.Add(taskItem);
@@ -103,7 +103,7 @@ namespace ClientCommon
                 {
                     TaskId = task.TaskId,
                     TaskItemTypeId = TaskItemType.itChooseAspect,
-                    ValueInt = (int)VerbAspect.Simple,
+                    ValueInt = VerbAspect.vaSimple,
                     SeqNo = 1
                 };
                 db.Add(taskItem);
@@ -120,7 +120,7 @@ namespace ClientCommon
                 {
                     ParentId = parentTaskItem.TaskItemId,
                     TaskItemTypeId = TaskItemType.itMakeFormula,
-                    ValueInt = FormulaItem.OtherPart.FormulaItemTypeID,
+                    ValueInt = SentencePart.spOtherPart,
                     SeqNo = 1
                 };
                 db.Add(taskItem);
@@ -129,7 +129,7 @@ namespace ClientCommon
                 {
                     ParentId = parentTaskItem.TaskItemId,
                     TaskItemTypeId = TaskItemType.itMakeFormula,
-                    ValueInt = FormulaItem.Subject.FormulaItemTypeID,
+                    ValueInt = SentencePart.spSubject,
                     SeqNo = 2
                 };
                 db.Add(taskItem);
@@ -138,7 +138,7 @@ namespace ClientCommon
                 {
                     ParentId = parentTaskItem.TaskItemId,
                     TaskItemTypeId = TaskItemType.itMakeFormula,
-                    ValueInt = NotionalVerbFormulaItem.Vs.NotionalVerbFormulaItemID,
+                    ValueInt = NotionalVerb.nvVs,
                     SeqNo = 3
                 };
                 db.Add(taskItem);
@@ -147,7 +147,7 @@ namespace ClientCommon
                 {
                     ParentId = parentTaskItem.TaskItemId,
                     TaskItemTypeId = TaskItemType.itMakeFormula,
-                    ValueInt = FormulaItem.OtherPart.FormulaItemTypeID,
+                    ValueInt = SentencePart.spOtherPart,
                     SeqNo = 4
                 };
                 db.Add(taskItem);
@@ -164,7 +164,7 @@ namespace ClientCommon
                 {
                     ParentId = parentTaskItem.TaskItemId,
                     TaskItemTypeId = TaskItemType.itMakeFormula,
-                    ValueInt = FormulaItem.Subject.FormulaItemTypeID,
+                    ValueInt = SentencePart.spSubject,
                     SeqNo = 1
                 };
                 db.Add(taskItem);
@@ -173,7 +173,7 @@ namespace ClientCommon
                 {
                     ParentId = parentTaskItem.TaskItemId,
                     TaskItemTypeId = TaskItemType.itMakeFormula,
-                    ValueInt = NotionalVerbFormulaItem.Vs.NotionalVerbFormulaItemID,
+                    ValueInt = NotionalVerb.nvVs,
                     SeqNo = 2
                 };
                 db.Add(taskItem);
@@ -182,7 +182,7 @@ namespace ClientCommon
                 {
                     ParentId = parentTaskItem.TaskItemId,
                     TaskItemTypeId = TaskItemType.itMakeFormula,
-                    ValueInt = FormulaItem.OtherPart.FormulaItemTypeID,
+                    ValueInt = SentencePart.spOtherPart,
                     SeqNo = 3
                 };
                 db.Add(taskItem);
@@ -199,17 +199,25 @@ namespace ClientCommon
                 {
                     ParentId = parentTaskItem.TaskItemId,
                     TaskItemTypeId = TaskItemType.itTranslate,
-                    ValueString = "My brother plays football well",
+                    ValueString = "My brother plays football well.",
                     SeqNo = 1
                 };
                 db.Add(taskItem);
+
+                parentTaskItem = new TaskItem
+                {
+                    TaskId = task.TaskId,
+                    TaskItemTypeId = TaskItemType.itTranslate,
+                    SeqNo = 2
+                };
+                db.Add(parentTaskItem);
 
                 taskItem = new TaskItem
                 {
                     ParentId = parentTaskItem.TaskItemId,
                     TaskItemTypeId = TaskItemType.itTranslate,
-                    ValueString = "My brother plays good football",
-                    SeqNo = 2
+                    ValueString = "My brother plays good football.",
+                    SeqNo = 1
                 };
                 db.Add(taskItem);
 
@@ -224,7 +232,7 @@ namespace ClientCommon
                 {
                     TaskId = task.TaskId,
                     TaskItemTypeId = TaskItemType.itChooseTense,
-                    ValueInt = (int)VerbTense.Past,
+                    ValueInt = VerbTense.vtPast,
                     SeqNo = 1
                 };
                 db.Add(taskItem);
@@ -233,7 +241,7 @@ namespace ClientCommon
                 {
                     TaskId = task.TaskId,
                     TaskItemTypeId = TaskItemType.itChooseAspect,
-                    ValueInt = (int)VerbAspect.Continuous,
+                    ValueInt = VerbAspect.vaContinuous,
                     SeqNo = 1
                 };
                 db.Add(taskItem);
@@ -250,7 +258,7 @@ namespace ClientCommon
                 {
                     ParentId = parentTaskItem.TaskItemId,
                     TaskItemTypeId = TaskItemType.itMakeFormula,
-                    ValueInt = FormulaItem.OtherPart.FormulaItemTypeID,
+                    ValueInt = SentencePart.spOtherPart,
                     SeqNo = 1
                 };
                 db.Add(taskItem);
@@ -259,7 +267,7 @@ namespace ClientCommon
                 {
                     ParentId = parentTaskItem.TaskItemId,
                     TaskItemTypeId = TaskItemType.itMakeFormula,
-                    ValueInt = FormulaItem.Subject.FormulaItemTypeID,
+                    ValueInt = SentencePart.spSubject,
                     SeqNo = 2
                 };
                 db.Add(taskItem);
@@ -268,7 +276,7 @@ namespace ClientCommon
                 {
                     ParentId = parentTaskItem.TaskItemId,
                     TaskItemTypeId = TaskItemType.itMakeFormula,
-                    ValueInt = ModalVerbFormulaItem.Was.ModalVerbFormulaItemID,
+                    ValueInt = ModalVerb.mvWas,
                     SeqNo = 3
                 };
                 db.Add(taskItem);
@@ -277,7 +285,7 @@ namespace ClientCommon
                 {
                     ParentId = parentTaskItem.TaskItemId,
                     TaskItemTypeId = TaskItemType.itMakeFormula,
-                    ValueInt = NotionalVerbFormulaItem.Ving.NotionalVerbFormulaItemID,
+                    ValueInt = NotionalVerb.nvVing,
                     SeqNo = 4
                 };
                 db.Add(taskItem);
@@ -286,7 +294,7 @@ namespace ClientCommon
                 {
                     ParentId = parentTaskItem.TaskItemId,
                     TaskItemTypeId = TaskItemType.itMakeFormula,
-                    ValueInt = FormulaItem.OtherPart.FormulaItemTypeID,
+                    ValueInt = SentencePart.spOtherPart,
                     SeqNo = 5
                 };
                 db.Add(taskItem);
