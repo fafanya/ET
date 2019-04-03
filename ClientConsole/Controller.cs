@@ -8,6 +8,21 @@ namespace ClientConsole
 {
     public static class Controller
     {
+        public static void ShowTestList()
+        {
+            Console.WriteLine("*******   Список тестов   *******");
+            IEnumerable<Test> tests = DBManager.Instance.GetTests();
+
+            int i = 1;
+            foreach (Test t in tests)
+            {
+                Console.WriteLine(i + "." + t.Header + " - " + t.Date.ToString());
+                i++;
+            }
+
+            Console.WriteLine("*********************************");
+        }
+
         public static void RunTest()
         {
             Console.WriteLine();

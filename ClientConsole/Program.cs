@@ -22,7 +22,7 @@ namespace ClientConsole
 
         private static bool RunMenu()
         {
-            Console.WriteLine("Введите: t - тестирование, q - выход");
+            Console.WriteLine("Введите: t - тестирование, l - список результатов, q - выход");
             string input = Console.ReadLine();
 
             string option = input.ToLower();
@@ -36,6 +36,11 @@ namespace ClientConsole
                 case "е":
                     {
                         Controller.RunTest();
+                        return true;
+                    }
+                case "l":
+                    {
+                        Controller.ShowTestList();
                         return true;
                     }
                 case "q":

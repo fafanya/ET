@@ -360,6 +360,14 @@ namespace ClientCommon
             }
         }
 
+        public IEnumerable<Test> GetTests()
+        {
+            using (var db = new ClientDBContext())
+            {
+                return db.Tests.ToList();
+            }
+        }
+
         public TaskInstance GetTaskInstance(int taskInstanceId)
         {
             using (var db = new ClientDBContext())
