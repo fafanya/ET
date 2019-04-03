@@ -368,11 +368,55 @@ namespace ClientCommon
             }
         }
 
+        public IEnumerable<TaskInstance> GetTaskInstancesByTestId(int testId)
+        {
+            using (var db = new ClientDBContext())
+            {
+                return db.TaskInstances.
+                    Where(x => x.TestId == testId).
+                        Include(y => y.Task).
+                            ThenInclude(z => z.TaskType).
+                    ToList();
+            }
+        }
+
+        public IEnumerable<TaskItem> GetTaskItemByTaskInstanceId(int taskInstanceId)
+        {
+            using (var db = new ClientDBContext())
+            {
+                return db.TaskItems.
+                        Include(x => x.TaskItemType).
+                        Include(x => x.Children).
+                    Where(x => x.TaskInstanceId == taskInstanceId).
+                    ToList();
+            }
+        }
+
+        public IEnumerable<TaskItem> GetTaskItemByTaskId(int taskId)
+        {
+            using (var db = new ClientDBContext())
+            {
+                return db.TaskItems.
+                        Include(x => x.TaskItemType).
+                        Include(x => x.Children).
+                    Where(x => x.TaskId == taskId).
+                    ToList();
+            }
+        }
+
         public TaskInstance GetTaskInstance(int taskInstanceId)
         {
             using (var db = new ClientDBContext())
             {
-                return db.TaskInstances.First(x => x.TaskInstanceId == taskInstanceId);
+                return db.TaskInstances.
+                    Include(y1 => y1.Task).
+                        ThenInclude(z1 => z1.TaskItems).
+                            ThenInclude(ti1 => ti1.Children).
+                    Include(y2 => y2.TaskItems).
+                        ThenInclude(ti2 => ti2.Children).
+                    Include(y3 => y3.TaskItems).
+                        ThenInclude(z3 => z3.TaskItemType).
+                    First(x => x.TaskInstanceId == taskInstanceId);
             }
         }
 
