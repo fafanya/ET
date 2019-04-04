@@ -19,7 +19,9 @@ namespace ClientConsole
                 int i = 0;
                 foreach (Test t in tests)
                 {
-                    Console.WriteLine(i + "." + t.Header + " - " + t.Date.ToString());
+                    Console.WriteLine(i + "." + t.Header + " - " + t.Date.ToString() +
+                        " [" + t.CorrectAnswerAmount + "/" +
+                                    (t.CorrectAnswerAmount + t.IncorrectAnswerAmount).ToString() + "]");
                     i++;
                 }
 
@@ -60,7 +62,9 @@ namespace ClientConsole
                             int j = 0;
                             foreach (TaskInstance taskInstance in taskInstances)
                             {
-                                Console.WriteLine(j + "." + taskInstance.Task.TaskType.Name);
+                                Console.WriteLine(j + "." + taskInstance.Task.TaskType.Name + 
+                                    " [" + taskInstance.CorrectAnswerAmount + "/" + 
+                                    (taskInstance.CorrectAnswerAmount + taskInstance.IncorrectAnswerAmount).ToString() +"]");
                                 j++;
                             }
 
@@ -201,13 +205,23 @@ namespace ClientConsole
             Console.WriteLine();
 
             Test test = DBManager.Instance.GenerateTest();
-            foreach(TaskInstance task in test.TaskInstances)
+
+            int correctAnswerAmount = 0;
+            int incorrectAnswerAmount = 0;
+            foreach (TaskInstance task in test.TaskInstances)
             {
                 switch (task.Task.TaskTypeId)
                 {
                     case TaskType.ttChooseSentenceVerbTense:
                         {
-                            RunMakeTenceTask(task);
+                            if (RunMakeTenceTask(task))
+                            {
+                                correctAnswerAmount++;
+                            }
+                            else
+                            {
+                                incorrectAnswerAmount++;
+                            }
                             continue;
                         }
                     default:
@@ -217,13 +231,19 @@ namespace ClientConsole
                 }
             }
 
+            test.CorrectAnswerAmount = correctAnswerAmount;
+            test.IncorrectAnswerAmount = incorrectAnswerAmount;
             DBManager.Instance.SaveTest(test);
             Console.WriteLine();
             Console.WriteLine("*******   Тест завершён   *******");
         }
 
-        public static void RunMakeTenceTask(TaskInstance ti)
+        public static bool RunMakeTenceTask(TaskInstance ti)
         {
+            bool isCorrect = true;
+            int correctAnswerAmount = 0;
+            int incorrectAnswerAmount = 0;
+
             Console.WriteLine("-------   Задание " + ti.SeqNo + "   -------");
             Console.WriteLine();
 
@@ -231,23 +251,59 @@ namespace ClientConsole
             Console.WriteLine(ti.Task.Text);
             Console.WriteLine();
 
-            RunSelectSubTask(VerbTense.List, "время", TaskItemType.itChooseTense, ti);
+            if(!RunSelectSubTask(VerbTense.List, "время", TaskItemType.itChooseTense, ti))
+            {
+                isCorrect = false;
+                incorrectAnswerAmount++;
+            }
+            else
+            {
+                correctAnswerAmount++;
+            }
             Console.WriteLine();
 
-            RunSelectSubTask(VerbAspect.List, "вид времени", TaskItemType.itChooseAspect, ti);
+            if(!RunSelectSubTask(VerbAspect.List, "вид времени", TaskItemType.itChooseAspect, ti))
+            {
+                isCorrect = false;
+                incorrectAnswerAmount++;
+            }
+            else
+            {
+                correctAnswerAmount++;
+            }
             Console.WriteLine();
 
-            RunFormulaSubTask(ti);
+            if (!RunFormulaSubTask(ti))
+            {
+                isCorrect = false;
+                incorrectAnswerAmount++;
+            }
+            else
+            {
+                correctAnswerAmount++;
+            }
             Console.WriteLine();
 
-            RunTranslateSubTask(ti);
+            if (!RunTranslateSubTask(ti))
+            {
+                isCorrect = false;
+                incorrectAnswerAmount++;
+            }
+            else
+            {
+                correctAnswerAmount++;
+            }
             Console.WriteLine();
 
+
+            ti.CorrectAnswerAmount = correctAnswerAmount;
+            ti.IncorrectAnswerAmount = incorrectAnswerAmount;
             Console.WriteLine("-------   Задание окончено   -------");
             Console.WriteLine("------------------------------------");
+            return isCorrect;
         }
 
-        private static void RunSelectSubTask(IEnumerable<LObject> lObjects, string header, int taskItemTypeId, TaskInstance ti)
+        private static bool RunSelectSubTask(IEnumerable<LObject> lObjects, string header, int taskItemTypeId, TaskInstance ti)
         {
             TaskItem taskItem = ti.Task.TaskItems.First(x => x.TaskItemTypeId == taskItemTypeId);
             object correctValue = taskItem.ValueInt;
@@ -282,9 +338,10 @@ namespace ClientConsole
 
             bool isCorrect = TaskChecker.CheckTaskItem(parentTaskItem);
             ShowResult(isCorrect);
+            return isCorrect;
         }
 
-        private static void RunTranslateSubTask(TaskInstance taskInstance)
+        private static bool RunTranslateSubTask(TaskInstance taskInstance)
         {
             Console.WriteLine("Переведите предложение:");
             string userAnswer = Console.ReadLine();
@@ -307,15 +364,16 @@ namespace ClientConsole
 
             bool isCorrect = TaskChecker.CheckTaskItem(parentTaskItem);
             ShowResult(isCorrect);
+            return isCorrect;
         }
 
-        private static void RunFormulaSubTask(TaskInstance taskInstance)
+        private static bool RunFormulaSubTask(TaskInstance taskInstance)
         {
             IEnumerable<TaskItem> formulaList = taskInstance.Task.TaskItems.
                 Where(x => x.TaskItemTypeId == TaskItemType.itMakeFormula);
             if (formulaList == null ||
                 formulaList.Count() == 0)
-                return;
+                return true;
 
             List<int> curentFormulaID = new List<int>();
 
@@ -489,6 +547,7 @@ namespace ClientConsole
 
             bool isCorrect = TaskChecker.CheckTaskItem(parentTaskItem);
             ShowResult(isCorrect);
+            return isCorrect;
         }
 
         private static string GetFormula(IEnumerable<int> formulaItemIdList)

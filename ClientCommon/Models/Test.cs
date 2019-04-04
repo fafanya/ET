@@ -20,6 +20,11 @@ namespace ClientCommon
         public User User { get; set; }
 
         [DataMember]
+        public int CorrectAnswerAmount { get; set; }
+        [DataMember]
+        public int IncorrectAnswerAmount { get; set; }
+
+        [DataMember]
         public ICollection<TaskInstance> TaskInstances { get; set; }
     }
 }

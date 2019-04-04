@@ -12,13 +12,13 @@ using Android.Widget;
 
 namespace ClientAndroid
 {
-    [Activity(Label = "StatisticsAvtivity")]
-    public class StatisticsActivity : Activity
+    [Activity(Label = "StatisticAvtivity")]
+    public class StatisticActivity : Activity
     {
         protected override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
-            SetContentView(Resource.Layout.activity_statistics);
+            SetContentView(Resource.Layout.activity_statistic);
             // Create your application here
         }
     }

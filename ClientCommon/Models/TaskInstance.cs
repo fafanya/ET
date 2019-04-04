@@ -22,6 +22,11 @@ namespace ClientCommon
         public Task Task { get; set; }
 
         [DataMember]
+        public int CorrectAnswerAmount { get; set; }
+        [DataMember]
+        public int IncorrectAnswerAmount { get; set; }
+
+        [DataMember]
         public ICollection<TaskItem> TaskItems { get; set; }
     }
 }

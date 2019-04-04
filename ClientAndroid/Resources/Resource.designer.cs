@@ -3104,7 +3104,7 @@ namespace ClientAndroid
 			public const int activity_result_test = 2130968603;
 			
 			// aapt resource value: 0x7f04001c
-			public const int activity_statistics = 2130968604;
+			public const int activity_statistic = 2130968604;
 			
 			// aapt resource value: 0x7f04001d
 			public const int activity_task = 2130968605;
