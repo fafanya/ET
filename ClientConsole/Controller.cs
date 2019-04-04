@@ -13,14 +13,185 @@ namespace ClientConsole
             Console.WriteLine("*******   Список тестов   *******");
             IEnumerable<Test> tests = DBManager.Instance.GetTests();
 
-            int i = 1;
-            foreach (Test t in tests)
+            bool isContinue = true;
+            while (isContinue)
             {
-                Console.WriteLine(i + "." + t.Header + " - " + t.Date.ToString());
-                i++;
+                int i = 0;
+                foreach (Test t in tests)
+                {
+                    Console.WriteLine(i + "." + t.Header + " - " + t.Date.ToString());
+                    i++;
+                }
+
+                int index = -1;
+                bool isValid = false;
+                while (!isValid)
+                {
+                    Console.Write("Введите номер теста или q для выхода:");
+                    string output = Console.ReadLine();
+                    if (int.TryParse(output, out index))
+                    {
+                        if (index >= 0 && index < tests.Count())
+                        {
+                            isValid = true;
+                        }
+                    }
+                    else if(output == "q")
+                    {
+                        isContinue = false;
+                        isValid = true;
+                        index = -1;
+                    }
+                    else
+                    {
+                        index = -1;
+                    }
+                }
+
+                if (isValid)
+                {
+                    if (index >= 0)
+                    {
+                        bool isContinueJ = true;
+                        while (isContinueJ)
+                        {
+                            Test test = tests.ElementAt(index);
+                            IEnumerable<TaskInstance> taskInstances = DBManager.Instance.GetTaskInstancesByTestId(test.TestId);
+                            int j = 0;
+                            foreach (TaskInstance taskInstance in taskInstances)
+                            {
+                                Console.WriteLine(j + "." + taskInstance.Task.TaskType.Name);
+                                j++;
+                            }
+
+
+                            int indexJ = -1;
+                            bool isValidJ = false;
+                            while (!isValidJ)
+                            {
+                                Console.Write("Введите номер упражнения или q для выхода:");
+                                string outputJ = Console.ReadLine();
+                                if (int.TryParse(outputJ, out indexJ))
+                                {
+                                    if (indexJ >= 0 && indexJ < taskInstances.Count())
+                                    {
+                                        isValidJ = true;
+                                    }
+                                }
+                                else if (outputJ == "q")
+                                {
+                                    isContinueJ = false;
+                                    isValidJ = true;
+                                    indexJ = -1;
+                                }
+                                else
+                                {
+                                    indexJ = -1;
+                                }
+                            }
+
+                            if (isValidJ)
+                            {
+                                if (indexJ >= 0)
+                                {
+                                    bool isContinueH = true;
+                                    while (isContinueH)
+                                    {
+                                        TaskInstance taskInstance = taskInstances.ElementAt(indexJ);
+
+                                        TaskInstance fullTaskInstance = DBManager.Instance.
+                                            GetTaskInstance(taskInstance.TaskInstanceId);
+
+                                        IEnumerable<TaskItem> taskItems = fullTaskInstance.TaskItems;
+                                        IEnumerable<TaskItem> correctTaskItems = fullTaskInstance.Task.TaskItems;
+
+                                        int h = 0;
+                                        foreach (TaskItem taskItem in taskItems)
+                                        {
+                                            Console.WriteLine("-------------------------");
+                                            Console.WriteLine(TaskChecker.CheckTaskItem(taskItem));
+                                            Console.WriteLine(h + "." + taskItem.TaskItemType.Name);
+                                            Console.WriteLine("Ваш ответ: " + "[ " + PrintTaskItem(taskItem) + " ]");
+                                            foreach (TaskItem correctTaskItem in correctTaskItems.
+                                                Where(x=>x.TaskItemTypeId == taskItem.TaskItemTypeId))
+                                            {
+                                                Console.WriteLine("Верный ответ: " + "[ " + PrintTaskItem(correctTaskItem) + " ]");
+                                            }
+                                            Console.WriteLine("-------------------------");
+                                            h++;
+                                        }
+
+                                        bool isValidH = false;
+                                        while (!isValidH)
+                                        {
+                                            Console.Write("Введите q для выхода:");
+                                            string outputH = Console.ReadLine();
+                                            if (outputH == "q")
+                                            {
+                                                isContinueH = false;
+                                                isValidH = true;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
             }
 
             Console.WriteLine("*********************************");
+        }
+
+        private static string PrintTaskItem(TaskItem taskItem)
+        {
+            string result = string.Empty;
+            if (taskItem.ValueInt.HasValue)
+            {
+                result += GetNameByValueInt(taskItem);
+            }
+            if (!string.IsNullOrWhiteSpace(taskItem.ValueString))
+            {
+                result += taskItem.ValueString;
+            }
+            if (taskItem.Children != null)
+            {
+                foreach (TaskItem childTaskItem in taskItem.Children)
+                {
+                    if (!string.IsNullOrWhiteSpace(result))
+                    {
+                        result += " + ";
+                    }
+                    result += PrintTaskItem(childTaskItem);
+                }
+            }
+
+            return result;
+        }
+
+        private static string GetNameByValueInt(TaskItem taskItem)
+        {
+            string result = string.Empty;
+            if (taskItem.ValueInt.HasValue)
+            {
+                if (taskItem.TaskItemTypeId == TaskItemType.itChooseTense)
+                {
+                    result = VerbTense.List.First(x => x.Id == taskItem.ValueInt).Name;
+                }
+                else if (taskItem.TaskItemTypeId == TaskItemType.itChooseAspect)
+                {
+                    result = VerbAspect.List.First(x => x.Id == taskItem.ValueInt).Name;
+                }
+                else if(taskItem.TaskItemTypeId == TaskItemType.itMakeFormula)
+                {
+                    List<LObject> lObjects = new List<LObject>();
+                    lObjects.AddRange(SentencePart.List);
+                    lObjects.AddRange(ModalVerb.List);
+                    lObjects.AddRange(NotionalVerb.List);
+                    result = lObjects.First(x => x.Id == taskItem.ValueInt).Name;
+                }
+            }
+            return result;
         }
 
         public static void RunTest()
