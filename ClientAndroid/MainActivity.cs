@@ -82,7 +82,7 @@ namespace ClientAndroid
 
             if (id == Resource.Id.nav_camera)
             {
-                //StartActivity(typeof(MainActivity));
+                
             }
             else if (id == Resource.Id.nav_gallery)
             {
@@ -90,7 +90,7 @@ namespace ClientAndroid
             }
             else if (id == Resource.Id.nav_slideshow)
             {
-
+                StartActivity(typeof(StatisticActivity));
             }
             else if (id == Resource.Id.nav_manage)
             {
