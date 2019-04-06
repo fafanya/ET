@@ -61,6 +61,8 @@
   <ItemGroup>
     <Compile Include="Adapters\TaskListAdapter.cs" />
     <Compile Include="Adapters\TestListAdapter.cs" />
+    <Compile Include="Adapters\VerbAspectListAdapter.cs" />
+    <Compile Include="Adapters\VerbTenseListAdapter.cs" />
     <Compile Include="MainActivity.cs" />
     <Compile Include="Resources\Resource.designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

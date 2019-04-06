@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 namespace ClientCommon
 {
-    public static class TaskChecker
+    public static class TaskController
     {
         public static void CheckTaskInstance(TaskInstance taskInstance)
         {
@@ -66,6 +66,57 @@ namespace ClientCommon
                 }
             }
             return false;
+        }
+
+        public static TaskItem AddAnswerToTaskInstance(int taskItemTypeId, TaskInstance taskInstance, 
+            int? valueInt = null, 
+            string valueString = null,
+            int[] valuesInt = null,
+            string[] valuesString = null)
+        {
+            TaskItem parentTaskItem = new TaskItem
+            {
+                TaskItemTypeId = taskItemTypeId,
+                TaskInstance = taskInstance
+            };
+            if (valueInt != null)
+            {
+                parentTaskItem.ValueInt = valueInt.Value;
+            }
+            else if(valueString != null)
+            {
+                parentTaskItem.ValueString = valueString;
+            }
+            else if(valuesInt != null)
+            {
+                parentTaskItem.Children = new List<TaskItem>();
+                for (int i = 0; i < valuesInt.Length; i++)
+                {
+                    TaskItem taskItem = new TaskItem
+                    {
+                        TaskItemTypeId = taskItemTypeId,
+                        ValueInt = valuesInt[i],
+                        SeqNo = i + 1
+                };
+                parentTaskItem.Children.Add(taskItem);
+            }
+        }
+            else if(valuesString != null)
+            {
+                parentTaskItem.Children = new List<TaskItem>();
+                for (int i = 0; i < valuesString.Length; i++)
+                {
+                    TaskItem taskItem = new TaskItem
+                    {
+                        TaskItemTypeId = taskItemTypeId,
+                        ValueString = valuesString[i],
+                        SeqNo = i + 1
+                    };
+                    parentTaskItem.Children.Add(taskItem);
+                }
+            }
+            taskInstance.TaskItems.Add(parentTaskItem);
+            return parentTaskItem;
         }
     }
 }

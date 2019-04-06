@@ -41,6 +41,16 @@ namespace ClientAndroid
             base.OnActivityResult(requestCode, resultCode, data);
             if(resultCode == Result.Ok)
             {
+                bool isCorrect = Intent.GetBooleanExtra("IS_CORRECT_TASK_INSTNACE", false);
+                if (isCorrect)
+                {
+                    m_Test.CorrectAnswerAmount++;
+                }
+                else
+                {
+                    m_Test.IncorrectAnswerAmount++;
+                }
+
                 if (ShowTask())
                 {
                     return;

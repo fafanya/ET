@@ -25,7 +25,7 @@ namespace ClientAndroid
             base.OnCreate(savedInstanceState);
             SetContentView(Resource.Layout.activity_task);
 
-            InitTask();
+            InitTaskInstance();
             AddFormulaItem();
 
             TextView tv = FindViewById<TextView>(Resource.Id.tvNativeLangText);
@@ -56,11 +56,12 @@ namespace ClientAndroid
 
         private void BtnTaskOK_Click(object sender, EventArgs e)
         {
-            SetResult(Result.Ok);
+            SaveTaskInstance();
+            SetResult(Result.Ok, Intent);
             Finish();
         }
 
-        private void InitTask()
+        private void InitTaskInstance()
         {
             int taskInstanceId = Intent.GetIntExtra("A_TASK_ID", 0);
             if(taskInstanceId != 0)
@@ -69,12 +70,42 @@ namespace ClientAndroid
             }
         }
 
+        private void SaveTaskInstance()
+        {
+            Spinner spVerbTense = FindViewById<Spinner>(Resource.Id.spVerbTense);
+            int valueInt = Convert.ToInt32(spVerbTense.SelectedItemId);
+            TaskItem taskItem = TaskController.AddAnswerToTaskInstance(TaskItemType.itChooseTense, m_TaskInstance, valueInt: valueInt);
+            if (!TaskController.CheckTaskItem(taskItem))
+            {
+                m_TaskInstance.IncorrectAnswerAmount++;
+            }
+            else
+            {
+                m_TaskInstance.CorrectAnswerAmount++;
+            }
+
+            Spinner spVerbAspect = FindViewById<Spinner>(Resource.Id.spVerbAspect);
+            valueInt = Convert.ToInt32(spVerbAspect.SelectedItemId);
+            taskItem = TaskController.AddAnswerToTaskInstance(TaskItemType.itChooseAspect, m_TaskInstance, valueInt: valueInt);
+            if (!TaskController.CheckTaskItem(taskItem))
+            {
+                m_TaskInstance.IncorrectAnswerAmount++;
+            }
+            else
+            {
+                m_TaskInstance.CorrectAnswerAmount++;
+            }
+
+            DBManager.Instance.SaveTaskInstance(m_TaskInstance);
+            Intent.PutExtra("IS_CORRECT_TASK_INSTNACE", m_TaskInstance.IncorrectAnswerAmount == 0);
+        }
+
         private void InitVerbTense()
         {
             Spinner spVerbTense = FindViewById<Spinner>(Resource.Id.spVerbTense);
             spVerbTense.ItemSelected += SpVerbTense_ItemSelected;
 
-            var adapter = new ArrayAdapter(this, Resource.Layout.support_simple_spinner_dropdown_item, VerbTense.List.Select(x => x.Name).ToArray());
+            var adapter = new VerbTenseListAdapter(this, VerbTense.List.ToArray());
             spVerbTense.Adapter = adapter;
         }
 
@@ -83,7 +114,7 @@ namespace ClientAndroid
             Spinner spVerbAspect = FindViewById<Spinner>(Resource.Id.spVerbAspect);
             spVerbAspect.ItemSelected += SpVerbAspect_ItemSelected;
 
-            var adapter = new ArrayAdapter(this, Resource.Layout.support_simple_spinner_dropdown_item, VerbAspect.List.Select(x => x.Name).ToArray());
+            var adapter = new VerbAspectListAdapter(this, VerbAspect.List.ToArray());
             spVerbAspect.Adapter = adapter;
         }
 

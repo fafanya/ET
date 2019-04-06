@@ -15,14 +15,14 @@ namespace Textbook
         public const int vtFuture = 3;
         public const int vtFutureInThePast = 4;
 
-        protected static List<LObject> m_List;
-        public static IEnumerable<LObject> List
+        protected static List<VerbTense> m_List;
+        public static IEnumerable<VerbTense> List
         {
             get
             {
                 if (m_List == null)
                 {
-                    m_List = new List<LObject>();
+                    m_List = new List<VerbTense>();
                     VerbTense verbTense = new VerbTense
                     {
                         Id = vtNone,

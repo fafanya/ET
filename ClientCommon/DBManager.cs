@@ -1,7 +1,6 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
-using System.Collections;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Textbook;
@@ -425,6 +424,15 @@ namespace ClientCommon
             using (var db = new ClientDBContext())
             {
                 db.Tests.Update(test);
+                db.SaveChanges();
+            }
+        }
+
+        public void SaveTaskInstance(TaskInstance taskInstance)
+        {
+            using (var db = new ClientDBContext())
+            {
+                db.TaskInstances.Update(taskInstance);
                 db.SaveChanges();
             }
         }

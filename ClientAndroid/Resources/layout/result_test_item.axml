@@ -1,16 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="horizontal"
+    android:id="@+id/llTest"
+	android:orientation="horizontal"
 	android:weightSum="5"
     android:layout_width="match_parent"
     android:layout_height="55dp">
 
 	<RelativeLayout
+		android:id="@+id/rlTestDate"
 		android:layout_width="0dp"
 		android:layout_height="match_parent"
 		android:layout_weight="1"
 		android:background="@color/colorTaskTrue">
 		<TextView
+			android:id="@+id/tvTestDate"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
 			android:textStyle="bold"
@@ -21,6 +24,7 @@
 	</RelativeLayout>
 
 	<LinearLayout
+		android:id="@+id/llTestSummary"
 		android:layout_width="0dp"
 		android:layout_height="match_parent"
 		android:layout_weight="3"
@@ -28,6 +32,7 @@
 		android:orientation="vertical">
 
 		<TextView
+			android:id="@+id/tvTestHeader"
 			android:layout_width="match_parent"
 			android:layout_height="0dp"
 			android:textStyle="bold"
@@ -35,6 +40,7 @@
 			android:text="Заголовок">
 		</TextView>
 		<TextView
+			android:id="@+id/tvTestText"
 			android:layout_width="match_parent"
 			android:layout_height="0dp"
 			android:layout_weight="1"
@@ -44,11 +50,13 @@
 	</LinearLayout>
 
 	<RelativeLayout
+		android:id="@+id/rlTestResult"
 		android:layout_width="0dp"
 		android:layout_height="match_parent"
 		android:layout_weight="1"
 		android:background="@color/colorTaskTrue">
 		<TextView
+			android:id="@+id/tvTestResult"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
 			android:textStyle="bold"

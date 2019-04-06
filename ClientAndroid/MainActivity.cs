@@ -1,4 +1,8 @@
 ﻿using System;
+using System.IO;
+using System.Linq;
+using System.Collections;
+using System.Collections.Generic;
 using Android;
 using Android.App;
 using Android.OS;
@@ -10,6 +14,7 @@ using Android.Support.V7.App;
 using Android.Views;
 using Android.Content;
 using ClientCommon;
+using Android.Widget;
 
 namespace ClientAndroid
 {
@@ -39,6 +44,8 @@ namespace ClientAndroid
 
             NavigationView navigationView = FindViewById<NavigationView>(Resource.Id.nav_view);
             navigationView.SetNavigationItemSelectedListener(this);
+
+            RefreshTests();
         }
 
         public override void OnBackPressed()
@@ -73,7 +80,13 @@ namespace ClientAndroid
 
         private void FabOnClick(object sender, EventArgs eventArgs)
         {
-            StartActivity(typeof(TestActivity));
+            StartActivityForResult(typeof(TestActivity), 0);
+        }
+
+        protected override void OnActivityResult(int requestCode, [GeneratedEnum] Result resultCode, Intent data)
+        {
+            base.OnActivityResult(requestCode, resultCode, data);
+            RefreshTests();
         }
 
         public bool OnNavigationItemSelected(IMenuItem item)
@@ -108,6 +121,23 @@ namespace ClientAndroid
             DrawerLayout drawer = FindViewById<DrawerLayout>(Resource.Id.drawer_layout);
             drawer.CloseDrawer(GravityCompat.Start);
             return true;
+        }
+
+        public void RefreshTests()
+        {
+            IEnumerable<Test> tests = DBManager.Instance.GetTests();
+            if(tests != null)
+            {
+                TestListAdapter tla = new TestListAdapter(this, tests.ToArray());
+                ListView lvTests = FindViewById<ListView>(Resource.Id.lvTests);
+                lvTests.Adapter = tla;
+                lvTests.ItemSelected += LvTests_ItemSelected;
+            }
+        }
+
+        private void LvTests_ItemSelected(object sender, AdapterView.ItemSelectedEventArgs e)
+        {
+            throw new NotImplementedException();
         }
     }
 }

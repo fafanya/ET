@@ -15,14 +15,14 @@ namespace Textbook
         public const int vaPerfect = 3;
         public const int vaPerfectContinuous = 4;
 
-        protected static List<LObject> m_List;
-        public static IEnumerable<LObject> List
+        protected static List<VerbAspect> m_List;
+        public static IEnumerable<VerbAspect> List
         {
             get
             {
                 if (m_List == null)
                 {
-                    m_List = new List<LObject>();
+                    m_List = new List<VerbAspect>();
                     VerbAspect verbTense = new VerbAspect
                     {
                         Id = vaNone,

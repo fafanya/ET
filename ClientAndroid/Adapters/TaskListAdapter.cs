@@ -1,5 +1,4 @@
-﻿using System;
-using Android.App;
+﻿using Android.App;
 using Android.Views;
 using Android.Widget;
 using ClientCommon;
@@ -40,7 +39,13 @@ namespace ClientAndroid
 
         public override View GetView(int position, View convertView, ViewGroup parent)
         {
-            throw new NotImplementedException();
+            View view = convertView;
+            if (view == null)
+            {
+                view = m_Context.LayoutInflater.Inflate(Resource.Layout.result_task_item, null);
+            }
+
+            return view;
         }
     }
 }
