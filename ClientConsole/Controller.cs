@@ -11,7 +11,7 @@ namespace ClientConsole
         public static void ShowTestList()
         {
             Console.WriteLine("*******   Список тестов   *******");
-            IEnumerable<Test> tests = DBManager.Instance.GetTests();
+            IEnumerable<Test> tests = DBController.Instance.GetTests();
 
             bool isContinue = true;
             while (isContinue)
@@ -58,7 +58,7 @@ namespace ClientConsole
                         while (isContinueJ)
                         {
                             Test test = tests.ElementAt(index);
-                            IEnumerable<TaskInstance> taskInstances = DBManager.Instance.GetTaskInstancesByTestId(test.TestId);
+                            IEnumerable<TaskInstance> taskInstances = DBController.Instance.GetTaskInstancesByTestId(test.TestId);
                             int j = 0;
                             foreach (TaskInstance taskInstance in taskInstances)
                             {
@@ -103,7 +103,7 @@ namespace ClientConsole
                                     {
                                         TaskInstance taskInstance = taskInstances.ElementAt(indexJ);
 
-                                        TaskInstance fullTaskInstance = DBManager.Instance.
+                                        TaskInstance fullTaskInstance = DBController.Instance.
                                             GetTaskInstance(taskInstance.TaskInstanceId);
 
                                         IEnumerable<TaskItem> taskItems = fullTaskInstance.TaskItems;
@@ -113,7 +113,7 @@ namespace ClientConsole
                                         foreach (TaskItem taskItem in taskItems)
                                         {
                                             Console.WriteLine("-------------------------");
-                                            Console.WriteLine(TaskController.CheckTaskItem(taskItem));
+                                            Console.WriteLine(fullTaskInstance.CheckTaskItem(taskItem));
                                             Console.WriteLine(h + "." + taskItem.TaskItemType.Name);
                                             Console.WriteLine("Ваш ответ: " + "[ " + PrintTaskItem(taskItem) + " ]");
                                             foreach (TaskItem correctTaskItem in correctTaskItems.
@@ -204,7 +204,7 @@ namespace ClientConsole
             Console.WriteLine("*******   Тест начат   *******");
             Console.WriteLine();
 
-            Test test = DBManager.Instance.GenerateTest();
+            Test test = DBController.Instance.GenerateTest();
 
             int correctAnswerAmount = 0;
             int incorrectAnswerAmount = 0;
@@ -233,81 +233,27 @@ namespace ClientConsole
 
             test.CorrectAnswerAmount = correctAnswerAmount;
             test.IncorrectAnswerAmount = incorrectAnswerAmount;
-            DBManager.Instance.SaveTest(test);
+            DBController.Instance.SaveTest(test);
             Console.WriteLine();
             Console.WriteLine("*******   Тест завершён   *******");
         }
 
         public static bool RunMakeTenceTask(TaskInstance ti)
         {
-            bool isCorrect = true;
-            int correctAnswerAmount = 0;
-            int incorrectAnswerAmount = 0;
+            Console.WriteLine("-------   Задание " + ti.SeqNo + "   -------\n");
+            Console.WriteLine("Дано предложение:\n" + ti.Task.Text + "\n");
 
-            Console.WriteLine("-------   Задание " + ti.SeqNo + "   -------");
-            Console.WriteLine();
+            RunSelectSubTask(VerbTense.List, "время", TaskItemType.itChooseTense, ti);
+            RunSelectSubTask(VerbAspect.List, "вид времени", TaskItemType.itChooseAspect, ti);
+            RunFormulaSubTask(ti);
+            RunTranslateSubTask(ti);
 
-            Console.WriteLine("Дано предложение:");
-            Console.WriteLine(ti.Task.Text);
-            Console.WriteLine();
-
-            if(!RunSelectSubTask(VerbTense.List, "время", TaskItemType.itChooseTense, ti))
-            {
-                isCorrect = false;
-                incorrectAnswerAmount++;
-            }
-            else
-            {
-                correctAnswerAmount++;
-            }
-            Console.WriteLine();
-
-            if(!RunSelectSubTask(VerbAspect.List, "вид времени", TaskItemType.itChooseAspect, ti))
-            {
-                isCorrect = false;
-                incorrectAnswerAmount++;
-            }
-            else
-            {
-                correctAnswerAmount++;
-            }
-            Console.WriteLine();
-
-            if (!RunFormulaSubTask(ti))
-            {
-                isCorrect = false;
-                incorrectAnswerAmount++;
-            }
-            else
-            {
-                correctAnswerAmount++;
-            }
-            Console.WriteLine();
-
-            if (!RunTranslateSubTask(ti))
-            {
-                isCorrect = false;
-                incorrectAnswerAmount++;
-            }
-            else
-            {
-                correctAnswerAmount++;
-            }
-            Console.WriteLine();
-
-
-            ti.CorrectAnswerAmount = correctAnswerAmount;
-            ti.IncorrectAnswerAmount = incorrectAnswerAmount;
-            Console.WriteLine("-------   Задание окончено   -------");
-            Console.WriteLine("------------------------------------");
-            return isCorrect;
+            Console.WriteLine("-------   Задание окончено   -------\n------------------------------------");
+            return ti.IncorrectAnswerAmount == 0;
         }
 
-        private static bool RunSelectSubTask(IEnumerable<LObject> lObjects, string header, int taskItemTypeId, TaskInstance ti)
+        private static void RunSelectSubTask(IEnumerable<LObject> lObjects, string header, int taskItemTypeId, TaskInstance ti)
         {
-            TaskItem taskItem = ti.Task.TaskItems.First(x => x.TaskItemTypeId == taskItemTypeId);
-            object correctValue = taskItem.ValueInt;
-
             Console.WriteLine("Выберите "+ header + ":");
             foreach(LObject lObject in lObjects)
             {
@@ -328,31 +274,18 @@ namespace ClientConsole
                 }
             }
 
-            TaskItem parentTaskItem = TaskController.AddAnswerToTaskInstance(taskItemTypeId, ti, index);
-            bool isCorrect = TaskController.CheckTaskItem(parentTaskItem);
-            ShowResult(isCorrect);
-            return isCorrect;
+            ShowResult(ti.AddAnswer(taskItemTypeId, index));
         }
 
-        private static bool RunTranslateSubTask(TaskInstance ti)
+        private static void RunTranslateSubTask(TaskInstance ti)
         {
             Console.WriteLine("Переведите предложение:");
             string userAnswer = Console.ReadLine();
-
-            TaskItem parentTaskItem = TaskController.AddAnswerToTaskInstance(TaskItemType.itTranslate, ti, valueString: userAnswer);
-            bool isCorrect = TaskController.CheckTaskItem(parentTaskItem);
-            ShowResult(isCorrect);
-            return isCorrect;
+            ShowResult(ti.AddAnswer(TaskItemType.itTranslate, valueString: userAnswer));
         }
 
-        private static bool RunFormulaSubTask(TaskInstance ti)
+        private static void RunFormulaSubTask(TaskInstance ti)
         {
-            IEnumerable<TaskItem> formulaList = ti.Task.TaskItems.
-                Where(x => x.TaskItemTypeId == TaskItemType.itMakeFormula);
-            if (formulaList == null ||
-                formulaList.Count() == 0)
-                return true;
-
             List<int> valuesInt = new List<int>();
 
             Console.WriteLine("Составьте формулу:");
@@ -502,11 +435,7 @@ namespace ClientConsole
                 }
             }
 
-            TaskItem parentTaskItem = TaskController.AddAnswerToTaskInstance(TaskItemType.itMakeFormula, ti, 
-                valuesInt: valuesInt.ToArray());
-            bool isCorrect = TaskController.CheckTaskItem(parentTaskItem);
-            ShowResult(isCorrect);
-            return isCorrect;
+            ShowResult(ti.AddAnswer(TaskItemType.itMakeFormula, valuesInt: valuesInt.ToArray()));
         }
 
         private static string GetFormula(IEnumerable<int> formulaItemIdList)
@@ -551,6 +480,7 @@ namespace ClientConsole
             {
                 Console.WriteLine("Не верно");
             }
+            Console.WriteLine();
         }
     }
 }

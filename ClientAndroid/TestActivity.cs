@@ -41,7 +41,7 @@ namespace ClientAndroid
             base.OnActivityResult(requestCode, resultCode, data);
             if(resultCode == Result.Ok)
             {
-                bool isCorrect = Intent.GetBooleanExtra("IS_CORRECT_TASK_INSTNACE", false);
+                bool isCorrect = Intent.GetBooleanExtra("IS_CORRECT_TASK_INSTANCE", false);
                 if (isCorrect)
                 {
                     m_Test.CorrectAnswerAmount++;
@@ -57,7 +57,7 @@ namespace ClientAndroid
                 }
                 else
                 {
-                    DBManager.Instance.SaveTest(m_Test);
+                    DBController.Instance.SaveTest(m_Test);
                 }
             }
             SetResult(resultCode);
@@ -66,7 +66,7 @@ namespace ClientAndroid
 
         private void InitTest()
         {
-            m_Test = DBManager.Instance.GenerateTest();
+            m_Test = DBController.Instance.GenerateTest();
             m_TaskEnumerator = m_Test.TaskInstances.GetEnumerator();
         }
 

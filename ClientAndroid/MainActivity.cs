@@ -27,7 +27,7 @@ namespace ClientAndroid
 
             ContextWrapper cw = new ContextWrapper(ApplicationContext);
             var dbFolder = cw.GetExternalFilesDir(Android.OS.Environment.DirectoryDocuments);
-            DBManager.Instance.RefreshDB(dbFolder.AbsolutePath);
+            DBController.Instance.RefreshDB(dbFolder.AbsolutePath);
 
             SetContentView(Resource.Layout.activity_main);
 
@@ -125,19 +125,30 @@ namespace ClientAndroid
 
         public void RefreshTests()
         {
-            IEnumerable<Test> tests = DBManager.Instance.GetTests();
+            IEnumerable<Test> tests = DBController.Instance.GetTests();
             if(tests != null)
             {
                 TestListAdapter tla = new TestListAdapter(this, tests.ToArray());
                 ListView lvTests = FindViewById<ListView>(Resource.Id.lvTests);
                 lvTests.Adapter = tla;
                 lvTests.ItemSelected += LvTests_ItemSelected;
+                lvTests.ItemClick += LvTests_ItemClick;
             }
+        }
+
+        private void LvTests_ItemClick(object sender, AdapterView.ItemClickEventArgs e)
+        {
+            int testId = Convert.ToInt32(e.Id);
+            Intent intent = new Intent(this, typeof(TestResultActivity));
+            intent.PutExtra("TEST_ID", testId);
+            StartActivityForResult(intent, testId);
         }
 
         private void LvTests_ItemSelected(object sender, AdapterView.ItemSelectedEventArgs e)
         {
-            throw new NotImplementedException();
+            /*Intent intent = new Intent(this, typeof(TestResultActivity));
+            intent.PutExtra("TEST_ID", e.Id);
+            StartActivityForResult(intent, Convert.ToInt32(e.Id));*/
         }
     }
 }

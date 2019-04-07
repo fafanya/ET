@@ -9,7 +9,7 @@ namespace ClientConsole
         static void Main(string[] args)
         {
             string folderAbsolurePath = Environment.CurrentDirectory;
-            DBManager.Instance.RefreshDB(folderAbsolurePath);
+            DBController.Instance.RefreshDB(folderAbsolurePath);
 
             Console.OutputEncoding = Encoding.UTF8;
             bool toContinue = true;

@@ -7,11 +7,11 @@ using Textbook;
 
 namespace ClientCommon
 {
-    public class DBManager
+    public class DBController
     {
-        public static DBManager Instance { get; } = new DBManager();
+        public static DBController Instance { get; } = new DBController();
 
-        private DBManager()
+        private DBController()
         {
         }
 
@@ -379,7 +379,7 @@ namespace ClientCommon
             }
         }
 
-        public IEnumerable<TaskItem> GetTaskItemByTaskInstanceId(int taskInstanceId)
+        public IEnumerable<TaskItem> GetTaskItemsByTaskInstanceId(int taskInstanceId)
         {
             using (var db = new ClientDBContext())
             {
@@ -391,7 +391,7 @@ namespace ClientCommon
             }
         }
 
-        public IEnumerable<TaskItem> GetTaskItemByTaskId(int taskId)
+        public IEnumerable<TaskItem> GetTaskItemsByTaskId(int taskId)
         {
             using (var db = new ClientDBContext())
             {

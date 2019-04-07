@@ -59,7 +59,7 @@
     <Reference Include="Mono.Android" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Adapters\TaskListAdapter.cs" />
+    <Compile Include="Adapters\TaskInstanceListAdapter.cs" />
     <Compile Include="Adapters\TestListAdapter.cs" />
     <Compile Include="Adapters\VerbAspectListAdapter.cs" />
     <Compile Include="Adapters\VerbTenseListAdapter.cs" />
@@ -70,6 +70,7 @@
     <Compile Include="StatisticActivity.cs" />
     <Compile Include="TaskActivity.cs" />
     <Compile Include="TestActivity.cs" />
+    <Compile Include="TestResultActivity.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />
@@ -166,7 +167,7 @@
     </AndroidResource>
   </ItemGroup>
   <ItemGroup>
-    <AndroidResource Include="Resources\layout\activity_result_test.axml">
+    <AndroidResource Include="Resources\layout\activity_test_result.axml">
       <SubType>Designer</SubType>
     </AndroidResource>
   </ItemGroup>

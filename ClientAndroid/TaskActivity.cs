@@ -66,7 +66,7 @@ namespace ClientAndroid
             int taskInstanceId = Intent.GetIntExtra("A_TASK_ID", 0);
             if(taskInstanceId != 0)
             {
-                m_TaskInstance = DBManager.Instance.GetTaskInstance(taskInstanceId);
+                m_TaskInstance = DBController.Instance.GetTaskInstance(taskInstanceId);
             }
         }
 
@@ -74,30 +74,14 @@ namespace ClientAndroid
         {
             Spinner spVerbTense = FindViewById<Spinner>(Resource.Id.spVerbTense);
             int valueInt = Convert.ToInt32(spVerbTense.SelectedItemId);
-            TaskItem taskItem = TaskController.AddAnswerToTaskInstance(TaskItemType.itChooseTense, m_TaskInstance, valueInt: valueInt);
-            if (!TaskController.CheckTaskItem(taskItem))
-            {
-                m_TaskInstance.IncorrectAnswerAmount++;
-            }
-            else
-            {
-                m_TaskInstance.CorrectAnswerAmount++;
-            }
+            m_TaskInstance.AddAnswer(TaskItemType.itChooseTense, valueInt: valueInt);
 
             Spinner spVerbAspect = FindViewById<Spinner>(Resource.Id.spVerbAspect);
             valueInt = Convert.ToInt32(spVerbAspect.SelectedItemId);
-            taskItem = TaskController.AddAnswerToTaskInstance(TaskItemType.itChooseAspect, m_TaskInstance, valueInt: valueInt);
-            if (!TaskController.CheckTaskItem(taskItem))
-            {
-                m_TaskInstance.IncorrectAnswerAmount++;
-            }
-            else
-            {
-                m_TaskInstance.CorrectAnswerAmount++;
-            }
+            m_TaskInstance.AddAnswer(TaskItemType.itChooseAspect, valueInt: valueInt);
 
-            DBManager.Instance.SaveTaskInstance(m_TaskInstance);
-            Intent.PutExtra("IS_CORRECT_TASK_INSTNACE", m_TaskInstance.IncorrectAnswerAmount == 0);
+            DBController.Instance.SaveTaskInstance(m_TaskInstance);
+            Intent.PutExtra("IS_CORRECT_TASK_INSTANCE", m_TaskInstance.IncorrectAnswerAmount == 0);
         }
 
         private void InitVerbTense()
