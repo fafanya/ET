@@ -84,6 +84,24 @@
 		android:text="+"
 		android:id="@+id/btnAddFormulaItem"/>
 
+	<TextView
+		android:layout_width="150dp"
+		android:layout_height="wrap_content"
+		android:layout_below="@id/btnAddFormulaItem"
+		android:text="Переведите:"
+		android:textStyle="bold"
+		android:id="@+id/tvTranslationHeader"/>
+
+	<EditText
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_below="@id/btnAddFormulaItem"
+		android:textSize="13sp"
+		android:hint="Перевод"
+		android:layout_margin="20dp"
+		android:id="@+id/etTranslation">
+	</EditText>
+
 	<Button
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"

@@ -10,14 +10,14 @@ namespace Textbook
         public const int nvVs = 33;
         public const int nvVes = 34;
 
-        protected static List<LObject> m_List;
-        public static IEnumerable<LObject> List
+        protected static List<NotionalVerb> m_List;
+        public static IEnumerable<NotionalVerb> List
         {
             get
             {
                 if (m_List == null)
                 {
-                    m_List = new List<LObject>();
+                    m_List = new List<NotionalVerb>();
                     NotionalVerb nv = new NotionalVerb
                     {
                         Id = nvNone,

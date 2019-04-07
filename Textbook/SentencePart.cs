@@ -12,14 +12,14 @@ namespace Textbook
         public const int spNotionalVerb = 13;
         public const int spOtherPart = 14;
 
-        protected static List<LObject> m_List;
-        public static IEnumerable<LObject> List
+        protected static List<SentencePart> m_List;
+        public static IEnumerable<SentencePart> List
         {
             get
             {
                 if (m_List == null)
                 {
-                    m_List = new List<LObject>();
+                    m_List = new List<SentencePart>();
                     SentencePart sp = new SentencePart
                     {
                         Id = spNone,

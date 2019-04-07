@@ -59,6 +59,9 @@
     <Reference Include="Mono.Android" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Adapters\ModalVerbListAdapter.cs" />
+    <Compile Include="Adapters\NotionalVerbListAdapter.cs" />
+    <Compile Include="Adapters\SentencePartListAdapter.cs" />
     <Compile Include="Adapters\TaskInstanceListAdapter.cs" />
     <Compile Include="Adapters\TestListAdapter.cs" />
     <Compile Include="Adapters\VerbAspectListAdapter.cs" />

@@ -64,7 +64,7 @@ namespace ClientAndroid
         private void InitTaskInstance()
         {
             int taskInstanceId = Intent.GetIntExtra("A_TASK_ID", 0);
-            if(taskInstanceId != 0)
+            if (taskInstanceId != 0)
             {
                 m_TaskInstance = DBController.Instance.GetTaskInstance(taskInstanceId);
             }
@@ -79,6 +79,21 @@ namespace ClientAndroid
             Spinner spVerbAspect = FindViewById<Spinner>(Resource.Id.spVerbAspect);
             valueInt = Convert.ToInt32(spVerbAspect.SelectedItemId);
             m_TaskInstance.AddAnswer(TaskItemType.itChooseAspect, valueInt: valueInt);
+
+            List<int> valuesInt = new List<int>();
+            LinearLayout llFormulaItemList = FindViewById<LinearLayout>(Resource.Id.llFormulaItemList);
+            for (int i = 0; i < llFormulaItemList.ChildCount; i++)
+            {
+                LinearLayout ll = llFormulaItemList.GetChildAt(i) as LinearLayout;
+                Spinner sp = ll.GetChildAt(ll.ChildCount - 1) as Spinner;
+                valuesInt.Add(Convert.ToInt32(sp.SelectedItemId));
+            }
+            m_TaskInstance.AddAnswer(TaskItemType.itMakeFormula, valuesInt: valuesInt.ToArray());
+
+            List<string> valuesString = new List<string>();
+            EditText etTranslation = FindViewById<EditText>(Resource.Id.etTranslation);
+            valuesString.Add(etTranslation.Text);
+            m_TaskInstance.AddAnswer(TaskItemType.itTranslate, valuesString: valuesString.ToArray());
 
             DBController.Instance.SaveTaskInstance(m_TaskInstance);
             Intent.PutExtra("IS_CORRECT_TASK_INSTANCE", m_TaskInstance.IncorrectAnswerAmount == 0);
@@ -119,48 +134,53 @@ namespace ClientAndroid
             {
                 LayoutParameters = lp
             };
-            var adapter = new ArrayAdapter(this, Resource.Layout.support_simple_spinner_dropdown_item, 
-                SentencePart.List.Select(x=>x.Name).ToArray());
+            var adapter = new SentencePartListAdapter(this, SentencePart.List.ToArray());
             spSentenceItem.Adapter = adapter;
             spSentenceItem.ItemSelected += SpSentenceItem_ItemSelected;
             ll.AddView(spSentenceItem);
-
-            Spinner spSentenceItemType = new Spinner(this)
-            {
-                LayoutParameters = lp
-            };
-            adapter = new ArrayAdapter(this, Resource.Layout.support_simple_spinner_dropdown_item, new string[] { "-" });
-            spSentenceItemType.Adapter = adapter;
-            spSentenceItemType.ItemSelected += SpSentenceItemType_ItemSelected;
-            ll.AddView(spSentenceItemType);
 
             LinearLayout llFormulaItemList = FindViewById<LinearLayout>(Resource.Id.llFormulaItemList);
             llFormulaItemList.AddView(ll);
         }
 
-        private void SpSentenceItemType_ItemSelected(object sender, AdapterView.ItemSelectedEventArgs e)
-        {
-        }
-
         private void SpSentenceItem_ItemSelected(object sender, AdapterView.ItemSelectedEventArgs e)
         {
             LinearLayout ll = (sender as Spinner).Parent as LinearLayout;
-            Spinner sp = ll.GetChildAt(1) as Spinner;
-            List<string> sentencePartList;
-            if (e.Position == 1)
+            if (e.Id == SentencePart.spModalVerb ||
+                e.Id == SentencePart.spNotionalVerb)
             {
-                sentencePartList = ModalVerb.List.Select(x => x.Name).ToList();
-            }
-            else if (e.Position == 2)
-            {
-                sentencePartList = NotionalVerb.List.Select(x => x.Name).ToList();
+                if (ll.ChildCount == 1)
+                {
+                    var lp = new TableLayout.LayoutParams(0, ViewGroup.LayoutParams.WrapContent)
+                    {
+                        Weight = 1
+                    };
+                    Spinner spSentenceItemType = new Spinner(this)
+                    {
+                        LayoutParameters = lp
+                    };
+                    ll.AddView(spSentenceItemType);
+                }
+
+                BaseAdapter adapter;
+                Spinner sp = ll.GetChildAt(1) as Spinner;
+                if (e.Id == SentencePart.spModalVerb)
+                {
+                    adapter = new ModalVerbListAdapter(this, ModalVerb.List.ToArray());
+                }
+                else
+                {
+                    adapter = new NotionalVerbListAdapter(this, NotionalVerb.List.ToArray());
+                }
+                sp.Adapter = adapter;
             }
             else
             {
-                sentencePartList = new List<string>() { "-" };
+                if (ll.ChildCount == 2)
+                {
+                    ll.RemoveViewAt(1);
+                }
             }
-            var adapter = new ArrayAdapter(this, Resource.Layout.support_simple_spinner_dropdown_item, sentencePartList);
-            sp.Adapter = adapter;
         }
     }
 }

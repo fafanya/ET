@@ -10,14 +10,14 @@ namespace Textbook
         public const int mvWere = 23;
         public const int mvBeen = 24;
 
-        protected static List<LObject> m_List;
-        public static IEnumerable<LObject> List
+        protected static List<ModalVerb> m_List;
+        public static IEnumerable<ModalVerb> List
         {
             get
             {
                 if (m_List == null)
                 {
-                    m_List = new List<LObject>();
+                    m_List = new List<ModalVerb>();
                     ModalVerb mv = new ModalVerb
                     {
                         Id = mvNone,

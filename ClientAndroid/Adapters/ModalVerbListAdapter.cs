@@ -5,22 +5,22 @@ using Textbook;
 
 namespace ClientAndroid
 {
-    public class VerbAspectListAdapter : BaseAdapter<VerbAspect>
+    public class ModalVerbListAdapter : BaseAdapter<ModalVerb>
     {
-        private VerbAspect[] m_VerbAspects;
+        private ModalVerb[] m_Items;
         private Activity m_Context;
 
-        public VerbAspectListAdapter(Activity context, VerbAspect[] verbAspects) : base()
+        public ModalVerbListAdapter(Activity context, ModalVerb[] items) : base()
         {
             m_Context = context;
-            m_VerbAspects = verbAspects;
+            m_Items = items;
         }
 
-        public override VerbAspect this[int position]
+        public override ModalVerb this[int position]
         {
             get
             {
-                return m_VerbAspects[position];
+                return m_Items[position];
             }
         }
 
@@ -28,21 +28,21 @@ namespace ClientAndroid
         {
             get
             {
-                return m_VerbAspects.Length;
+                return m_Items.Length;
             }
         }
 
         public override long GetItemId(int position)
         {
-            return m_VerbAspects[position].Id;
+            return m_Items[position].Id;
         }
 
         public override View GetView(int position, View convertView, ViewGroup parent)
         {
             View view = convertView ?? m_Context.LayoutInflater.Inflate(Android.Resource.Layout.SimpleSpinnerDropDownItem, null);
-            VerbAspect verbAspect = m_VerbAspects[position];
+            ModalVerb item = m_Items[position];
             TextView tvText = view.FindViewById<TextView>(Android.Resource.Id.Text1);
-            tvText.Text = verbAspect.Name;
+            tvText.Text = item.Name;
             return view;
         }
     }
