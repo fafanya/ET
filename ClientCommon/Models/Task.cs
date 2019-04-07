@@ -20,5 +20,7 @@ namespace ClientCommon
         public ICollection<TaskInstance> TaskInstances { get; set; }
         [DataMember]
         public ICollection<TaskItem> TaskItems { get; set; }
+
+        
     }
 }

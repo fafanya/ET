@@ -31,11 +31,21 @@ namespace ClientAndroid
             if (testId != 0)
             {
                 IEnumerable<TaskInstance> taskInstances = DBController.Instance.GetTaskInstancesByTestId(testId);
-                ListView lvTaskInstances = FindViewById<ListView>(Resource.Id.lvTaskInstences);
-                TaskInstanceListAdapter taskInstanceListAdapter =
+                TaskInstanceListAdapter adapter =
                     new TaskInstanceListAdapter(this, taskInstances.ToArray());
-                lvTaskInstances.Adapter = taskInstanceListAdapter;
+
+                ListView lvTaskInstances = FindViewById<ListView>(Resource.Id.lvTaskInstances);
+                lvTaskInstances.Adapter = adapter;
+                lvTaskInstances.ItemClick += LvTaskInstances_ItemClick;
             }
+        }
+
+        private void LvTaskInstances_ItemClick(object sender, AdapterView.ItemClickEventArgs e)
+        {
+            int taskInstanceId = Convert.ToInt32(e.Id);
+            Intent intent = new Intent(this, typeof(TaskInstanceResultActivity));
+            intent.PutExtra("TASK_INSTANCE_ID", taskInstanceId);
+            StartActivityForResult(intent, taskInstanceId);
         }
     }
 }

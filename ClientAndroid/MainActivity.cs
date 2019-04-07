@@ -131,7 +131,6 @@ namespace ClientAndroid
                 TestListAdapter tla = new TestListAdapter(this, tests.ToArray());
                 ListView lvTests = FindViewById<ListView>(Resource.Id.lvTests);
                 lvTests.Adapter = tla;
-                lvTests.ItemSelected += LvTests_ItemSelected;
                 lvTests.ItemClick += LvTests_ItemClick;
             }
         }
@@ -142,13 +141,6 @@ namespace ClientAndroid
             Intent intent = new Intent(this, typeof(TestResultActivity));
             intent.PutExtra("TEST_ID", testId);
             StartActivityForResult(intent, testId);
-        }
-
-        private void LvTests_ItemSelected(object sender, AdapterView.ItemSelectedEventArgs e)
-        {
-            /*Intent intent = new Intent(this, typeof(TestResultActivity));
-            intent.PutExtra("TEST_ID", e.Id);
-            StartActivityForResult(intent, Convert.ToInt32(e.Id));*/
         }
     }
 }

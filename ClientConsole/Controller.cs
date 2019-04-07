@@ -113,13 +113,13 @@ namespace ClientConsole
                                         foreach (TaskItem taskItem in taskItems)
                                         {
                                             Console.WriteLine("-------------------------");
-                                            Console.WriteLine(fullTaskInstance.CheckTaskItem(taskItem));
+                                            Console.WriteLine(fullTaskInstance.CheckTaskItem(taskItem) ? "Верно" : "Не верно");
                                             Console.WriteLine(h + "." + taskItem.TaskItemType.Name);
-                                            Console.WriteLine("Ваш ответ: " + "[ " + PrintTaskItem(taskItem) + " ]");
+                                            Console.WriteLine("Ваш ответ: " + "[ " + taskItem.AsString() + " ]");
                                             foreach (TaskItem correctTaskItem in correctTaskItems.
                                                 Where(x=>x.TaskItemTypeId == taskItem.TaskItemTypeId))
                                             {
-                                                Console.WriteLine("Верный ответ: " + "[ " + PrintTaskItem(correctTaskItem) + " ]");
+                                                Console.WriteLine("Верный ответ: " + "[ " + correctTaskItem.AsString() + " ]");
                                             }
                                             Console.WriteLine("-------------------------");
                                             h++;
@@ -145,57 +145,6 @@ namespace ClientConsole
             }
 
             Console.WriteLine("*********************************");
-        }
-
-        private static string PrintTaskItem(TaskItem taskItem)
-        {
-            string result = string.Empty;
-            if (taskItem.ValueInt.HasValue)
-            {
-                result += GetNameByValueInt(taskItem);
-            }
-            if (!string.IsNullOrWhiteSpace(taskItem.ValueString))
-            {
-                result += taskItem.ValueString;
-            }
-            if (taskItem.Children != null)
-            {
-                foreach (TaskItem childTaskItem in taskItem.Children)
-                {
-                    if (!string.IsNullOrWhiteSpace(result))
-                    {
-                        result += " + ";
-                    }
-                    result += PrintTaskItem(childTaskItem);
-                }
-            }
-
-            return result;
-        }
-
-        private static string GetNameByValueInt(TaskItem taskItem)
-        {
-            string result = string.Empty;
-            if (taskItem.ValueInt.HasValue)
-            {
-                if (taskItem.TaskItemTypeId == TaskItemType.itChooseTense)
-                {
-                    result = VerbTense.List.First(x => x.Id == taskItem.ValueInt).Name;
-                }
-                else if (taskItem.TaskItemTypeId == TaskItemType.itChooseAspect)
-                {
-                    result = VerbAspect.List.First(x => x.Id == taskItem.ValueInt).Name;
-                }
-                else if(taskItem.TaskItemTypeId == TaskItemType.itMakeFormula)
-                {
-                    List<LObject> lObjects = new List<LObject>();
-                    lObjects.AddRange(SentencePart.List);
-                    lObjects.AddRange(ModalVerb.List);
-                    lObjects.AddRange(NotionalVerb.List);
-                    result = lObjects.First(x => x.Id == taskItem.ValueInt).Name;
-                }
-            }
-            return result;
         }
 
         public static void RunTest()
