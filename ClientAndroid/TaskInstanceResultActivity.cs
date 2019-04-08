@@ -21,8 +21,19 @@ namespace ClientAndroid
         {
             base.OnCreate(savedInstanceState);
             SetContentView(Resource.Layout.activity_task_instance_result);
+
+            Button btnTaskInstanceRule = FindViewById<Button>(Resource.Id.btnTaskInstanceRule);
+            btnTaskInstanceRule.Click += BtnTaskInstanceRule_Click;
             // Create your application here
             InitTaskInstace();
+        }
+
+        private void BtnTaskInstanceRule_Click(object sender, EventArgs e)
+        {
+            int taskInstanceId = Intent.GetIntExtra("TASK_INSTANCE_ID", 0);
+            Intent intent = new Intent(this, typeof(RuleActivity));
+            intent.PutExtra("TASK_INSTANCE_ID", taskInstanceId);
+            StartActivityForResult(intent, taskInstanceId);
         }
 
         private void InitTaskInstace()
