@@ -20,6 +20,12 @@ namespace ClientAndroid
             base.OnCreate(savedInstanceState);
             SetContentView(Resource.Layout.activity_rule);
             // Create your application here
+            InitRule();
+        }
+
+        private void InitRule()
+        {
+            TextView tvRule = FindViewById<TextView>(Resource.Id.tvRule);
         }
     }
 }
