@@ -428,6 +428,15 @@ namespace ClientCommon
             }
         }
 
+        public void DeleteTest(Test test)
+        {
+            using (var db = new ClientDBContext())
+            {
+                db.Tests.Remove(test);
+                db.SaveChanges();
+            }
+        }
+
         public void SaveTaskInstance(TaskInstance taskInstance)
         {
             using (var db = new ClientDBContext())

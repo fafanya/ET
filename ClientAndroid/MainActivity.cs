@@ -15,6 +15,7 @@ using Android.Views;
 using Android.Content;
 using ClientCommon;
 using Android.Widget;
+using static Android.Widget.AdapterView;
 
 namespace ClientAndroid
 {
@@ -45,7 +46,36 @@ namespace ClientAndroid
             NavigationView navigationView = FindViewById<NavigationView>(Resource.Id.nav_view);
             navigationView.SetNavigationItemSelectedListener(this);
 
+            ListView lvTests = FindViewById<ListView>(Resource.Id.lvTests);
+            RegisterForContextMenu(lvTests);
+
             RefreshTests();
+        }
+
+        public override void OnCreateContextMenu(IContextMenu menu, View v, IContextMenuContextMenuInfo menuInfo)
+        {
+            base.OnCreateContextMenu(menu, v, menuInfo);
+            menu.Add(1, 1, 1, "Удалить");
+        }
+
+        public override bool OnContextItemSelected(IMenuItem item)
+        {
+            switch (item.ItemId)
+            {
+                case 1:
+                    {
+                        ListView lvTests = FindViewById<ListView>(Resource.Id.lvTests);
+                        AdapterContextMenuInfo info = item.MenuInfo as AdapterContextMenuInfo;
+                        TestListAdapter adapter = lvTests.Adapter as TestListAdapter;
+                        DBController.Instance.DeleteTest(adapter[info.Position]);
+                        RefreshTests();
+                        return true;
+                    }
+                default:
+                    {
+                        return base.OnContextItemSelected(item);
+                    }
+            }
         }
 
         public override void OnBackPressed()
