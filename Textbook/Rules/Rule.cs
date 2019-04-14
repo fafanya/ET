@@ -1,6 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
+using Textbook.Kernel;
 
 namespace Textbook
 {
@@ -10,34 +9,16 @@ namespace Textbook
         public const int rPastContinuous = 21;
         public const int rPastSimple = 22;
 
-        protected static List<Rule> m_List;
-        public static IEnumerable<Rule> List
+        public static Rule Instance { get; } = new Rule();
+
+        private Rule()
         {
-            get
+            List = new Dictionary<int, LObject>
             {
-                if (m_List == null)
-                {
-                    m_List = new List<Rule>();
-                    Rule r = new Rule
-                    {
-                        Id = rNone,
-                        Name = "-"
-                    };
-                    m_List.Add(r);
-                    r = new Rule
-                    {
-                        Id = rPastContinuous,
-                        Name = "Past Continuoas"
-                    };
-                    m_List.Add(r);
-                    r = new Rule
-                    {
-                        Id = rPastSimple,
-                        Name = "Past Simple"
-                    };
-                }
-                return m_List;
-            }
+                { rNone, new LObject(rNone, "-") },
+                { rPastContinuous, new LObject(rPastContinuous, "Past Continuous") },
+                { rPastSimple, new LObject(rPastSimple, "Past Simple") }
+            };
         }
     }
 }

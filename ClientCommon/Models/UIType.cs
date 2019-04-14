@@ -4,19 +4,19 @@ using System.Runtime.Serialization;
 namespace ClientCommon
 {
     [DataContract]
-    public class TaskItemType
+    public class UIType
     {
         [IgnoreDataMember]
-        public const int itChooseTense = 1;
+        public const int uiSelect = 1;
         [IgnoreDataMember]
-        public const int itChooseAspect = 2;
+        public const int uiFormula = 2;
         [IgnoreDataMember]
-        public const int itMakeFormula = 3;
+        public const int uiText = 3;
         [IgnoreDataMember]
-        public const int itTranslate = 4;
+        public const int uiMixed = 4;
 
         [DataMember]
-        public int TaskItemTypeId { get; set; }
+        public int UITypeId { get; set; }
         [DataMember]
         public string Name { get; set; }
 

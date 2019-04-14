@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Runtime.Serialization;
 using System.ComponentModel.DataAnnotations.Schema;
 using Textbook;
+using Textbook.Kernel;
+using Textbook.Language;
 
 namespace ClientCommon
 {
@@ -17,6 +19,8 @@ namespace ClientCommon
         public int? ValueInt { get; set; }
         [DataMember]
         public string ValueString { get; set; }
+        [DataMember]
+        public int LangItemId { get; set; }
 
         [DataMember]
         public int? TaskId { get; set; }
@@ -38,11 +42,11 @@ namespace ClientCommon
         public ICollection<TaskItem> Children { get; set; }
 
         [DataMember]
-        public int TaskItemTypeId { get; set; }
+        public int? UITypeId { get; set; }
         [DataMember]
-        public TaskItemType TaskItemType { get; set; }
+        public UIType UIType { get; set; }
 
-        public string AsString()
+        public override string ToString()
         {
             string result = string.Empty;
             if (ValueInt.HasValue)
@@ -61,7 +65,7 @@ namespace ClientCommon
                     {
                         result += " + ";
                     }
-                    result += childTaskItem.AsString();
+                    result += childTaskItem.ToString();
                 }
             }
             return result;
@@ -72,24 +76,37 @@ namespace ClientCommon
             string result = string.Empty;
             if (ValueInt.HasValue)
             {
-                if (TaskItemTypeId == TaskItemType.itChooseTense)
+                if (LangItemId == Lib.lTense)
                 {
-                    result = VerbTense.List.First(x => x.Id == ValueInt).Name;
+                    result = Lib.Instance.List[Lib.lTense].Data[ValueInt.Value].Name;
                 }
-                else if (TaskItemTypeId == TaskItemType.itChooseAspect)
+                else if (LangItemId == Lib.lAspect)
                 {
-                    result = VerbAspect.List.First(x => x.Id == ValueInt).Name;
+                    result = Lib.Instance.List[Lib.lAspect].Data[ValueInt.Value].Name;
                 }
-                else if (TaskItemTypeId == TaskItemType.itMakeFormula)
+                else if (LangItemId == Lib.lSentencePart)
                 {
-                    List<LObject> lObjects = new List<LObject>();
-                    lObjects.AddRange(SentencePart.List);
-                    lObjects.AddRange(ModalVerb.List);
-                    lObjects.AddRange(NotionalVerb.List);
-                    result = lObjects.First(x => x.Id == ValueInt).Name;
+                    result = GetSentencePartNameByValueInt(ValueInt.Value);
                 }
             }
             return result;
+        }
+
+        public static string GetSentencePartNameByValueInt(int valueInt)
+        {
+            List<LObject> lObjects = new List<LObject>();
+            lObjects.AddRange(Lib.Instance.List[Lib.lSentencePart].Data.Values);
+            lObjects.AddRange(ModalVerb.Instance.List.Values);
+            lObjects.AddRange(NotionalVerb.Instance.List.Values);
+            return lObjects.First(x => x.Id == valueInt).Name;
+        }
+
+        public string Header
+        {
+            get
+            {
+                return Lib.Instance.List[LangItemId].Name;
+            }
         }
     }
 }

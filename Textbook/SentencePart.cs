@@ -1,6 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
+using Textbook.Kernel;
 
 namespace Textbook
 {
@@ -12,47 +11,18 @@ namespace Textbook
         public const int spNotionalVerb = 13;
         public const int spOtherPart = 14;
 
-        protected static List<SentencePart> m_List;
-        public static IEnumerable<SentencePart> List
+        public static SentencePart Instance { get; } = new SentencePart();
+
+        private SentencePart()
         {
-            get
+            List = new Dictionary<int, LObject>
             {
-                if (m_List == null)
-                {
-                    m_List = new List<SentencePart>();
-                    SentencePart sp = new SentencePart
-                    {
-                        Id = spNone,
-                        Name = "-"
-                    };
-                    m_List.Add(sp);
-                    sp = new SentencePart
-                    {
-                        Id = spSubject,
-                        Name = "Подлежащее"
-                    };
-                    m_List.Add(sp);
-                    sp = new SentencePart
-                    {
-                        Id = spModalVerb,
-                        Name = "Модальный глагол"
-                    };
-                    m_List.Add(sp);
-                    sp = new SentencePart
-                    {
-                        Id = spNotionalVerb,
-                        Name = "Смысловой глагол"
-                    };
-                    m_List.Add(sp);
-                    sp = new SentencePart
-                    {
-                        Id = spOtherPart,
-                        Name = "Другие части предложения"
-                    };
-                    m_List.Add(sp);
-                }
-                return m_List;
-            }
+                { spNone, new LObject(spNone, "-") },
+                { spSubject, new LObject(spSubject, "Подлежащее") },
+                { spModalVerb, new LObject(spModalVerb, "Модальный глагол", ModalVerb.Instance.List) },
+                { spNotionalVerb, new LObject(spNotionalVerb, "Смысловой глагол", NotionalVerb.Instance.List) },
+                { spOtherPart, new LObject(spOtherPart, "Другие части предложения") }
+            };
         }
     }
 }

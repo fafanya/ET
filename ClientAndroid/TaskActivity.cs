@@ -11,6 +11,7 @@ using Android.Views;
 using Android.Widget;
 
 using Textbook;
+using Textbook.Language;
 using ClientCommon;
 
 namespace ClientAndroid
@@ -74,11 +75,11 @@ namespace ClientAndroid
         {
             Spinner spVerbTense = FindViewById<Spinner>(Resource.Id.spVerbTense);
             int valueInt = Convert.ToInt32(spVerbTense.SelectedItemId);
-            m_TaskInstance.AddAnswer(TaskItemType.itChooseTense, valueInt: valueInt);
+            m_TaskInstance.AddAnswer(Lib.lTense, valueInt: valueInt);
 
             Spinner spVerbAspect = FindViewById<Spinner>(Resource.Id.spVerbAspect);
             valueInt = Convert.ToInt32(spVerbAspect.SelectedItemId);
-            m_TaskInstance.AddAnswer(TaskItemType.itChooseAspect, valueInt: valueInt);
+            m_TaskInstance.AddAnswer(Lib.lAspect, valueInt: valueInt);
 
             List<int> valuesInt = new List<int>();
             LinearLayout llFormulaItemList = FindViewById<LinearLayout>(Resource.Id.llFormulaItemList);
@@ -88,12 +89,12 @@ namespace ClientAndroid
                 Spinner sp = ll.GetChildAt(ll.ChildCount - 1) as Spinner;
                 valuesInt.Add(Convert.ToInt32(sp.SelectedItemId));
             }
-            m_TaskInstance.AddAnswer(TaskItemType.itMakeFormula, valuesInt: valuesInt.ToArray());
+            m_TaskInstance.AddAnswer(Lib.lSentencePart, valuesInt: valuesInt.ToArray());
 
             List<string> valuesString = new List<string>();
             EditText etTranslation = FindViewById<EditText>(Resource.Id.etTranslation);
             valuesString.Add(etTranslation.Text);
-            m_TaskInstance.AddAnswer(TaskItemType.itTranslate, valuesString: valuesString.ToArray());
+            m_TaskInstance.AddAnswer(Lib.lTranslate, valuesString: valuesString.ToArray());
 
             DBController.Instance.SaveTaskInstance(m_TaskInstance);
             Intent.PutExtra("IS_CORRECT_TASK_INSTANCE", m_TaskInstance.IncorrectAnswerAmount == 0);
@@ -104,7 +105,7 @@ namespace ClientAndroid
             Spinner spVerbTense = FindViewById<Spinner>(Resource.Id.spVerbTense);
             spVerbTense.ItemSelected += SpVerbTense_ItemSelected;
 
-            var adapter = new VerbTenseListAdapter(this, VerbTense.List.ToArray());
+            var adapter = new LObjectListAdapter(this, VerbTense.Instance.List.Values.ToArray());
             spVerbTense.Adapter = adapter;
         }
 
@@ -113,7 +114,7 @@ namespace ClientAndroid
             Spinner spVerbAspect = FindViewById<Spinner>(Resource.Id.spVerbAspect);
             spVerbAspect.ItemSelected += SpVerbAspect_ItemSelected;
 
-            var adapter = new VerbAspectListAdapter(this, VerbAspect.List.ToArray());
+            var adapter = new LObjectListAdapter(this, VerbAspect.Instance.List.Values.ToArray());
             spVerbAspect.Adapter = adapter;
         }
 
@@ -134,7 +135,7 @@ namespace ClientAndroid
             {
                 LayoutParameters = lp
             };
-            var adapter = new SentencePartListAdapter(this, SentencePart.List.ToArray());
+            var adapter = new LObjectListAdapter(this, SentencePart.Instance.List.Values.ToArray());
             spSentenceItem.Adapter = adapter;
             spSentenceItem.ItemSelected += SpSentenceItem_ItemSelected;
             ll.AddView(spSentenceItem);
@@ -166,11 +167,11 @@ namespace ClientAndroid
                 Spinner sp = ll.GetChildAt(1) as Spinner;
                 if (e.Id == SentencePart.spModalVerb)
                 {
-                    adapter = new ModalVerbListAdapter(this, ModalVerb.List.ToArray());
+                    adapter = new LObjectListAdapter(this, ModalVerb.Instance.List.Values.ToArray());
                 }
                 else
                 {
-                    adapter = new NotionalVerbListAdapter(this, NotionalVerb.List.ToArray());
+                    adapter = new LObjectListAdapter(this, NotionalVerb.Instance.List.Values.ToArray());
                 }
                 sp.Adapter = adapter;
             }

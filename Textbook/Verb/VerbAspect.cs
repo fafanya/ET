@@ -1,6 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
+using Textbook.Kernel;
 
 namespace Textbook
 {
@@ -15,47 +14,18 @@ namespace Textbook
         public const int vaPerfect = 3;
         public const int vaPerfectContinuous = 4;
 
-        protected static List<VerbAspect> m_List;
-        public static IEnumerable<VerbAspect> List
+        public static VerbAspect Instance { get; } = new VerbAspect();
+
+        private VerbAspect()
         {
-            get
+            List = new Dictionary<int, LObject>
             {
-                if (m_List == null)
-                {
-                    m_List = new List<VerbAspect>();
-                    VerbAspect verbTense = new VerbAspect
-                    {
-                        Id = vaNone,
-                        Name = "Не выбрано"
-                    };
-                    m_List.Add(verbTense);
-                    verbTense = new VerbAspect
-                    {
-                        Id = vaSimple,
-                        Name = "Simple"
-                    };
-                    m_List.Add(verbTense);
-                    verbTense = new VerbAspect
-                    {
-                        Id = vaContinuous,
-                        Name = "Continuous"
-                    };
-                    m_List.Add(verbTense);
-                    verbTense = new VerbAspect
-                    {
-                        Id = vaPerfect,
-                        Name = "Perfect"
-                    };
-                    m_List.Add(verbTense);
-                    verbTense = new VerbAspect
-                    {
-                        Id = vaPerfectContinuous,
-                        Name = "Perfect Continuous"
-                    };
-                    m_List.Add(verbTense);
-                }
-                return m_List;
-            }
+                { vaNone, new LObject(vaNone, "Не выбрано") },
+                { vaSimple, new LObject(vaSimple, "Simple") },
+                { vaContinuous, new LObject(vaContinuous, "Continuous") },
+                { vaPerfect, new LObject(vaPerfect, "Perfect") },
+                { vaPerfectContinuous, new LObject(vaPerfectContinuous, "Perfect Continuous") }
+            };
         }
     }
 }

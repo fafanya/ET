@@ -2,7 +2,8 @@
 using System.Linq;
 using System.Collections.Generic;
 using ClientCommon;
-using Textbook;
+using Textbook.Kernel;
+using Textbook.Language;
 
 namespace ClientConsole
 {
@@ -13,129 +14,114 @@ namespace ClientConsole
             Console.WriteLine("*******   Список тестов   *******");
             IEnumerable<Test> tests = DBController.Instance.GetTests();
 
-            bool isContinue = true;
-            while (isContinue)
+            bool isContinueTest = true;
+            while (isContinueTest)
             {
-                int i = 0;
+                int seqNoTest = 0;
                 foreach (Test t in tests)
                 {
-                    Console.WriteLine(i + "." + t.Header + " - " + t.Date.ToString() +
+                    Console.WriteLine(seqNoTest + "." + t.Header + " - " + t.Date.ToString() +
                         " [" + t.CorrectAnswerAmount + "/" +
                                     (t.CorrectAnswerAmount + t.IncorrectAnswerAmount).ToString() + "]");
-                    i++;
+                    seqNoTest++;
                 }
 
-                int index = -1;
-                bool isValid = false;
-                while (!isValid)
+                int? indexTest = null;
+                bool isValidTestInput = false;
+                while (!isValidTestInput)
                 {
                     Console.Write("Введите номер теста или q для выхода:");
-                    string output = Console.ReadLine();
-                    if (int.TryParse(output, out index))
+                    string input = Console.ReadLine();
+                    if (int.TryParse(input, out int temp))
                     {
-                        if (index >= 0 && index < tests.Count())
+                        if (temp >= 0 && temp < tests.Count())
                         {
-                            isValid = true;
+                            isValidTestInput = true;
+                            indexTest = temp;
                         }
                     }
-                    else if(output == "q")
+                    else if (input == "q")
                     {
-                        isContinue = false;
-                        isValid = true;
-                        index = -1;
-                    }
-                    else
-                    {
-                        index = -1;
+                        isContinueTest = false;
+                        isValidTestInput = true;
                     }
                 }
 
-                if (isValid)
+                if (indexTest.HasValue)
                 {
-                    if (index >= 0)
+                    bool isContinueTask = true;
+                    while (isContinueTask)
                     {
-                        bool isContinueJ = true;
-                        while (isContinueJ)
+                        Test test = tests.ElementAt(indexTest.Value);
+                        IEnumerable<TaskInstance> taskInstances = DBController.Instance.GetTaskInstancesByTestId(test.TestId);
+                        int seqNoTask = 0;
+                        foreach (TaskInstance taskInstance in taskInstances)
                         {
-                            Test test = tests.ElementAt(index);
-                            IEnumerable<TaskInstance> taskInstances = DBController.Instance.GetTaskInstancesByTestId(test.TestId);
-                            int j = 0;
-                            foreach (TaskInstance taskInstance in taskInstances)
-                            {
-                                Console.WriteLine(j + "." + taskInstance.Task.TaskType.Name + 
-                                    " [" + taskInstance.CorrectAnswerAmount + "/" + 
-                                    (taskInstance.CorrectAnswerAmount + taskInstance.IncorrectAnswerAmount).ToString() +"]");
-                                j++;
-                            }
+                            Console.WriteLine(seqNoTask + "." + taskInstance.Task.Text +
+                                " [" + taskInstance.CorrectAnswerAmount + "/" +
+                                (taskInstance.CorrectAnswerAmount + taskInstance.IncorrectAnswerAmount).ToString() + "]");
+                            seqNoTask++;
+                        }
 
-
-                            int indexJ = -1;
-                            bool isValidJ = false;
-                            while (!isValidJ)
+                        int? indexTask = null;
+                        bool isValidTaskInput = false;
+                        while (!isValidTaskInput)
+                        {
+                            Console.Write("Введите номер упражнения или q для выхода:");
+                            string input = Console.ReadLine();
+                            if (int.TryParse(input, out int temp))
                             {
-                                Console.Write("Введите номер упражнения или q для выхода:");
-                                string outputJ = Console.ReadLine();
-                                if (int.TryParse(outputJ, out indexJ))
+                                if (temp >= 0 && temp < taskInstances.Count())
                                 {
-                                    if (indexJ >= 0 && indexJ < taskInstances.Count())
+                                    indexTask = temp;
+                                    isValidTaskInput = true;
+                                }
+                            }
+                            else if (input == "q")
+                            {
+                                isContinueTask = false;
+                                isValidTaskInput = true;
+                            }
+                        }
+
+                        if (indexTask.HasValue)
+                        {
+                            bool isContinueTaskItem = true;
+                            while (isContinueTaskItem)
+                            {
+                                TaskInstance taskInstance = taskInstances.ElementAt(indexTask.Value);
+
+                                TaskInstance fullTaskInstance = DBController.Instance.
+                                    GetTaskInstance(taskInstance.TaskInstanceId);
+
+                                IEnumerable<TaskItem> taskItems = fullTaskInstance.TaskItems;
+                                IEnumerable<TaskItem> correctTaskItems = fullTaskInstance.Task.TaskItems;
+
+                                int seqNoTaskItem = 0;
+                                foreach (TaskItem taskItem in taskItems)
+                                {
+                                    Console.WriteLine("-------------------------");
+                                    Console.WriteLine(fullTaskInstance.CheckTaskItem(taskItem) ? "Верно" : "Не верно");
+                                    Console.WriteLine(seqNoTaskItem + "." + taskItem.Header);
+                                    Console.WriteLine("Ваш ответ: " + "[ " + taskItem.ToString() + " ]");
+                                    foreach (TaskItem correctTaskItem in correctTaskItems.
+                                        FirstOrDefault(x => x.LangItemId == taskItem.LangItemId).Children)
                                     {
-                                        isValidJ = true;
+                                        Console.WriteLine("Верный ответ: " + "[ " + correctTaskItem.ToString() + " ]");
                                     }
+                                    Console.WriteLine("-------------------------");
+                                    seqNoTaskItem++;
                                 }
-                                else if (outputJ == "q")
-                                {
-                                    isContinueJ = false;
-                                    isValidJ = true;
-                                    indexJ = -1;
-                                }
-                                else
-                                {
-                                    indexJ = -1;
-                                }
-                            }
 
-                            if (isValidJ)
-                            {
-                                if (indexJ >= 0)
+                                bool isValidTaskItemInput = false;
+                                while (!isValidTaskItemInput)
                                 {
-                                    bool isContinueH = true;
-                                    while (isContinueH)
+                                    Console.Write("Введите q для выхода:");
+                                    string input = Console.ReadLine();
+                                    if (input == "q")
                                     {
-                                        TaskInstance taskInstance = taskInstances.ElementAt(indexJ);
-
-                                        TaskInstance fullTaskInstance = DBController.Instance.
-                                            GetTaskInstance(taskInstance.TaskInstanceId);
-
-                                        IEnumerable<TaskItem> taskItems = fullTaskInstance.TaskItems;
-                                        IEnumerable<TaskItem> correctTaskItems = fullTaskInstance.Task.TaskItems;
-
-                                        int h = 0;
-                                        foreach (TaskItem taskItem in taskItems)
-                                        {
-                                            Console.WriteLine("-------------------------");
-                                            Console.WriteLine(fullTaskInstance.CheckTaskItem(taskItem) ? "Верно" : "Не верно");
-                                            Console.WriteLine(h + "." + taskItem.TaskItemType.Name);
-                                            Console.WriteLine("Ваш ответ: " + "[ " + taskItem.AsString() + " ]");
-                                            foreach (TaskItem correctTaskItem in correctTaskItems.
-                                                Where(x=>x.TaskItemTypeId == taskItem.TaskItemTypeId))
-                                            {
-                                                Console.WriteLine("Верный ответ: " + "[ " + correctTaskItem.AsString() + " ]");
-                                            }
-                                            Console.WriteLine("-------------------------");
-                                            h++;
-                                        }
-
-                                        bool isValidH = false;
-                                        while (!isValidH)
-                                        {
-                                            Console.Write("Введите q для выхода:");
-                                            string outputH = Console.ReadLine();
-                                            if (outputH == "q")
-                                            {
-                                                isContinueH = false;
-                                                isValidH = true;
-                                            }
-                                        }
+                                        isContinueTaskItem = false;
+                                        isValidTaskItemInput = true;
                                     }
                                 }
                             }
@@ -159,24 +145,13 @@ namespace ClientConsole
             int incorrectAnswerAmount = 0;
             foreach (TaskInstance task in test.TaskInstances)
             {
-                switch (task.Task.TaskTypeId)
+                if (RunTask(task))
                 {
-                    case TaskType.ttChooseSentenceVerbTense:
-                        {
-                            if (RunMakeTenceTask(task))
-                            {
-                                correctAnswerAmount++;
-                            }
-                            else
-                            {
-                                incorrectAnswerAmount++;
-                            }
-                            continue;
-                        }
-                    default:
-                        {
-                            continue;
-                        }
+                    correctAnswerAmount++;
+                }
+                else
+                {
+                    incorrectAnswerAmount++;
                 }
             }
 
@@ -186,58 +161,54 @@ namespace ClientConsole
             Console.WriteLine();
             Console.WriteLine("*******   Тест завершён   *******");
         }
-
-        public static bool RunMakeTenceTask(TaskInstance ti)
+        public static bool RunTask(TaskInstance ti)
         {
             Console.WriteLine("-------   Задание " + ti.SeqNo + "   -------\n");
             Console.WriteLine("Дано предложение:\n" + ti.Task.Text + "\n");
 
-            RunSelectSubTask(VerbTense.List, "время", TaskItemType.itChooseTense, ti);
-            RunSelectSubTask(VerbAspect.List, "вид времени", TaskItemType.itChooseAspect, ti);
-            RunFormulaSubTask(ti);
-            RunTranslateSubTask(ti);
+            foreach(TaskItem taskItem in ti.Task.TaskItems)
+            {
+                int? valueInt = null;
+                string valueString = null;
+                int[] valuesInt = null;
+                string[] valuesString = null;
+                if (taskItem.UITypeId == UIType.uiSelect)
+                {
+                    valueInt = RunSubTaskSelect(taskItem);
+                }
+                else if (taskItem.UITypeId == UIType.uiFormula)
+                {
+                    valuesInt = RunSubTaskFormula(taskItem);
+                }
+                else if (taskItem.UITypeId == UIType.uiText)
+                {
+                    valueString = RunSubTaskText(taskItem);
+                }
+                ShowResult(ti.AddAnswer(taskItem.LangItemId, valueInt,
+                                                                 valueString,
+                                                                 valuesInt,
+                                                                 valuesString));
+            }
 
             Console.WriteLine("-------   Задание окончено   -------\n------------------------------------");
             return ti.IncorrectAnswerAmount == 0;
         }
 
-        private static void RunSelectSubTask(IEnumerable<LObject> lObjects, string header, int taskItemTypeId, TaskInstance ti)
+        private static int RunSubTaskSelect(TaskItem taskItem)
         {
-            Console.WriteLine("Выберите "+ header + ":");
-            foreach(LObject lObject in lObjects)
-            {
-                Console.WriteLine(lObject.Id + "." + lObject.Name);
-            }
-            int index = 0;
-            bool isValid = false;
-            while (!isValid)
-            {
-                Console.Write("Номер ответа: ");
-                string output = Console.ReadLine();
-                if (int.TryParse(output, out index))
-                {
-                    if (index >= 0 && index < lObjects.Count())
-                    {
-                        isValid = true;
-                    }
-                }
-            }
-
-            ShowResult(ti.AddAnswer(taskItemTypeId, index));
+            Console.WriteLine(taskItem.UIType.Name + " " + taskItem.Header + ":");
+            var lObjects = Lib.Instance.List[taskItem.LangItemId].Data;
+            return RunSelect(lObjects);
         }
-
-        private static void RunTranslateSubTask(TaskInstance ti)
+        private static string RunSubTaskText(TaskItem taskItem)
         {
-            Console.WriteLine("Переведите предложение:");
-            string userAnswer = Console.ReadLine();
-            ShowResult(ti.AddAnswer(TaskItemType.itTranslate, valueString: userAnswer));
+            Console.WriteLine(taskItem.UIType.Name + " " + taskItem.Header + ":");
+            return Console.ReadLine();
         }
-
-        private static void RunFormulaSubTask(TaskInstance ti)
+        private static int[] RunSubTaskFormula(TaskItem taskItem)
         {
+            Console.WriteLine(taskItem.UIType.Name + ":");
             List<int> valuesInt = new List<int>();
-
-            Console.WriteLine("Составьте формулу:");
             bool isContinue = true;
             while (isContinue)
             {
@@ -261,121 +232,10 @@ namespace ClientConsole
                 {
                     if (output == "1")
                     {
-                        Console.WriteLine("Выберите часть предложения:");
-                        int spSeqNo = 0;
-                        foreach(SentencePart sp in SentencePart.List)
-                        {
-                            Console.WriteLine(spSeqNo + "." + sp.Name);
-                            spSeqNo++;
-                        }
-
-                        bool isPartValid = false;
-                        string partOutput = null;
-                        while (!isPartValid)
-                        {
-                            Console.Write("Ваш вариант:");
-                            partOutput = Console.ReadLine();
-                            if (!string.IsNullOrWhiteSpace(partOutput))
-                            {
-                                if (partOutput == "1" || partOutput == "2" || partOutput == "3" || partOutput == "4")
-                                {
-                                    isPartValid = true;
-                                }
-                            }
-                        }
-
-                        if (partOutput == "1")
-                        {
-                            valuesInt.Add(SentencePart.spSubject);
-                        }
-                        else if (partOutput == "2")
-                        {
-                            Console.WriteLine("Выберите модальный глагол:");
-                            int mvSeqNo = 0;
-                            foreach (ModalVerb mv in ModalVerb.List)
-                            {
-                                Console.WriteLine(mvSeqNo + "." + mv.Name);
-                                mvSeqNo++;
-                            }
-
-                            bool isRPartValid = false;
-                            string partROutput = null;
-                            while (!isRPartValid)
-                            {
-                                Console.Write("Ваш вариант:");
-                                partROutput = Console.ReadLine();
-                                if (!string.IsNullOrWhiteSpace(partROutput))
-                                {
-                                    if (partROutput == "1" || partROutput == "2" || partROutput == "3" || partROutput == "4")
-                                    {
-                                        isRPartValid = true;
-                                    }
-                                }
-                            }
-
-                            if(partROutput == "1")
-                            {
-                                valuesInt.Add(ModalVerb.mvDo);
-                            }
-                            else if (partROutput == "2")
-                            {
-                                valuesInt.Add(ModalVerb.mvWas);
-                            }
-                            else if (partROutput == "3")
-                            {
-                                valuesInt.Add(ModalVerb.mvWere);
-                            }
-                            else if (partROutput == "4")
-                            {
-                                valuesInt.Add(ModalVerb.mvBeen);
-                            }
-                        }
-                        else if (partOutput == "3")
-                        {
-                            Console.WriteLine("Выберите вид смыслового глагола:");
-                            int nvSeqNo = 0;
-                            foreach (NotionalVerb mv in NotionalVerb.List)
-                            {
-                                Console.WriteLine(nvSeqNo + "." + mv.Name);
-                                nvSeqNo++;
-                            }
-
-                            bool isRPartValid = false;
-                            string partROutput = null;
-                            while (!isRPartValid)
-                            {
-                                Console.Write("Ваш вариант:");
-                                partROutput = Console.ReadLine();
-                                if (!string.IsNullOrWhiteSpace(partROutput))
-                                {
-                                    if (partROutput == "1" || partROutput == "2" || partROutput == "3" || partROutput == "4")
-                                    {
-                                        isRPartValid = true;
-                                    }
-                                }
-                            }
-
-                            if (partROutput == "1")
-                            {
-                                valuesInt.Add(NotionalVerb.nvV);
-                            }
-                            else if (partROutput == "2")
-                            {
-                                valuesInt.Add(NotionalVerb.nvVes);
-                            }
-                            else if (partROutput == "3")
-                            {
-                                valuesInt.Add(NotionalVerb.nvVs);
-                            }
-                            else if (partROutput == "4")
-                            {
-                                valuesInt.Add(NotionalVerb.nvVing);
-                            }
-                        }
-                        else if (partOutput == "4")
-                        {
-                            valuesInt.Add(SentencePart.spOtherPart);
-                        }
+                        Console.WriteLine(taskItem.Header + ":");
+                        var lObjects = Lib.Instance.List[taskItem.LangItemId].Data;
+                        int valueInt = RunSelect(lObjects);
+                        valuesInt.Add(valueInt);
                     }
                     else if(output == "2")
                     {
@@ -383,21 +243,51 @@ namespace ClientConsole
                     }
                 }
             }
+            return valuesInt.ToArray();
+        }
+        private static int RunSelect(Dictionary<int, LObject> lObjects)
+        {
+            int spSeqNo = 0;
+            Dictionary<int, int> seq2id = new Dictionary<int, int>();
+            foreach (var lObject in lObjects)
+            {
+                Console.WriteLine(spSeqNo + "." + lObject.Value.Name);
+                seq2id.Add(spSeqNo, lObject.Key);
+                spSeqNo++;
+            }
 
-            ShowResult(ti.AddAnswer(TaskItemType.itMakeFormula, valuesInt: valuesInt.ToArray()));
+            int index = 0;
+            bool isValid = false;
+            while (!isValid)
+            {
+                Console.Write("Номер ответа: ");
+                string output = Console.ReadLine();
+                if (int.TryParse(output, out index))
+                {
+                    if (index >= 0 && index < lObjects.Count())
+                    {
+                        isValid = true;
+                    }
+                }
+            }
+
+            LObject sItem = lObjects[seq2id[index]];
+            if (sItem.Data == null)
+            {
+                return sItem.Id;
+            }
+            else
+            {
+                return RunSelect(sItem.Data);
+            }
         }
 
         private static string GetFormula(IEnumerable<int> formulaItemIdList)
         {
-            List<LObject> lObjects = new List<LObject>();
-            lObjects.AddRange(SentencePart.List);
-            lObjects.AddRange(ModalVerb.List);
-            lObjects.AddRange(NotionalVerb.List);
-
             List<string> formulaItemNameList = new List<string>();
             foreach (int formulaItemId in formulaItemIdList)
             {
-                string formulaItemName = lObjects.First(x => x.Id == formulaItemId).Name;
+                string formulaItemName = TaskItem.GetSentencePartNameByValueInt(formulaItemId);
                 formulaItemNameList.Add(formulaItemName);
             }
 
@@ -417,7 +307,6 @@ namespace ClientConsole
             result += " ]";
             return result;
         }
-
         private static void ShowResult(bool isCorrect)
         {
             Console.Write("Результат: ");

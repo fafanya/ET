@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Textbook.Kernel;
 
 namespace Textbook
 {
@@ -10,47 +11,18 @@ namespace Textbook
         public const int nvVs = 33;
         public const int nvVes = 34;
 
-        protected static List<NotionalVerb> m_List;
-        public static IEnumerable<NotionalVerb> List
+        public static NotionalVerb Instance { get; } = new NotionalVerb();
+
+        private NotionalVerb()
         {
-            get
+            List = new Dictionary<int, LObject>
             {
-                if (m_List == null)
-                {
-                    m_List = new List<NotionalVerb>();
-                    NotionalVerb nv = new NotionalVerb
-                    {
-                        Id = nvNone,
-                        Name = "-"
-                    };
-                    m_List.Add(nv);
-                    nv = new NotionalVerb
-                    {
-                        Id = nvV,
-                        Name = "V"
-                    };
-                    m_List.Add(nv);
-                    nv = new NotionalVerb
-                    {
-                        Id = nvVing,
-                        Name = "V-ing"
-                    };
-                    m_List.Add(nv);
-                    nv = new NotionalVerb
-                    {
-                        Id = nvVs,
-                        Name = "Vs"
-                    };
-                    m_List.Add(nv);
-                    nv = new NotionalVerb
-                    {
-                        Id = nvVes,
-                        Name = "Ves"
-                    };
-                    m_List.Add(nv);
-                }
-                return m_List;
-            }
+                { nvNone, new LObject(nvNone, "-") },
+                { nvV, new LObject(nvV, "V") },
+                { nvVing, new LObject(nvVing, "V-ing") },
+                { nvVs, new LObject(nvVs, "Vs") },
+                { nvVes, new LObject(nvVes, "Ves") }
+            };
         }
     }
 }

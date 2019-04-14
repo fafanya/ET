@@ -61,20 +61,20 @@ namespace ClientAndroid
                     ll.AddView(textView);
 
                     textView = new TextView(this);
-                    textView.Text = h + "." + taskItem.TaskItemType.Name;
+                    textView.Text = h + "." + taskItem.Header;
                     textView.LayoutParameters = layoutParameters;
                     ll.AddView(textView);
 
                     textView = new TextView(this);
-                    textView.Text = "Ваш ответ: " + "[ " + taskItem.AsString() + " ]";
+                    textView.Text = "Ваш ответ: " + "[ " + taskItem.ToString() + " ]";
                     textView.LayoutParameters = layoutParameters;
                     ll.AddView(textView);
 
                     foreach (TaskItem correctTaskItem in correctTaskItems.
-                        Where(x => x.TaskItemTypeId == taskItem.TaskItemTypeId))
+                        Where(x => x.LangItemId == taskItem.LangItemId))
                     {
                         textView = new TextView(this);
-                        textView.Text = "Верный ответ: " + "[ " + correctTaskItem.AsString() + " ]";
+                        textView.Text = "Верный ответ: " + "[ " + correctTaskItem.ToString() + " ]";
                         textView.LayoutParameters = layoutParameters;
                         ll.AddView(textView);
                     }

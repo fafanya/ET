@@ -12,15 +12,8 @@ namespace ClientCommon
         public string Text { get; set; }
 
         [DataMember]
-        public int TaskTypeId { get; set; }
-        [DataMember]
-        public TaskType TaskType { get; set; }
-
-        [DataMember]
         public ICollection<TaskInstance> TaskInstances { get; set; }
         [DataMember]
         public ICollection<TaskItem> TaskItems { get; set; }
-
-        
     }
 }

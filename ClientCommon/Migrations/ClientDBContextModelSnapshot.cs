@@ -21,13 +21,9 @@ namespace ClientCommon.Migrations
                     b.Property<int>("TaskId")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<int>("TaskTypeId");
-
                     b.Property<string>("Text");
 
                     b.HasKey("TaskId");
-
-                    b.HasIndex("TaskTypeId");
 
                     b.ToTable("Tasks");
                 });
@@ -61,6 +57,8 @@ namespace ClientCommon.Migrations
                     b.Property<int>("TaskItemId")
                         .ValueGeneratedOnAdd();
 
+                    b.Property<int>("LangItemId");
+
                     b.Property<int?>("ParentId");
 
                     b.Property<int>("SeqNo");
@@ -69,7 +67,7 @@ namespace ClientCommon.Migrations
 
                     b.Property<int?>("TaskInstanceId");
 
-                    b.Property<int>("TaskItemTypeId");
+                    b.Property<int?>("UITypeId");
 
                     b.Property<int?>("ValueInt");
 
@@ -83,33 +81,9 @@ namespace ClientCommon.Migrations
 
                     b.HasIndex("TaskInstanceId");
 
-                    b.HasIndex("TaskItemTypeId");
+                    b.HasIndex("UITypeId");
 
                     b.ToTable("TaskItems");
-                });
-
-            modelBuilder.Entity("ClientCommon.TaskItemType", b =>
-                {
-                    b.Property<int>("TaskItemTypeId")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<string>("Name");
-
-                    b.HasKey("TaskItemTypeId");
-
-                    b.ToTable("TaskItemTypes");
-                });
-
-            modelBuilder.Entity("ClientCommon.TaskType", b =>
-                {
-                    b.Property<int>("TaskTypeId")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<string>("Name");
-
-                    b.HasKey("TaskTypeId");
-
-                    b.ToTable("TaskTypes");
                 });
 
             modelBuilder.Entity("ClientCommon.Test", b =>
@@ -125,37 +99,21 @@ namespace ClientCommon.Migrations
 
                     b.Property<int>("IncorrectAnswerAmount");
 
-                    b.Property<int>("UserId");
-
                     b.HasKey("TestId");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("Tests");
                 });
 
-            modelBuilder.Entity("ClientCommon.User", b =>
+            modelBuilder.Entity("ClientCommon.UIType", b =>
                 {
-                    b.Property<int>("UserId")
+                    b.Property<int>("UITypeId")
                         .ValueGeneratedOnAdd();
-
-                    b.Property<string>("Email");
 
                     b.Property<string>("Name");
 
-                    b.Property<string>("Password");
+                    b.HasKey("UITypeId");
 
-                    b.HasKey("UserId");
-
-                    b.ToTable("Users");
-                });
-
-            modelBuilder.Entity("ClientCommon.Task", b =>
-                {
-                    b.HasOne("ClientCommon.TaskType", "TaskType")
-                        .WithMany("Tasks")
-                        .HasForeignKey("TaskTypeId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                    b.ToTable("UITypes");
                 });
 
             modelBuilder.Entity("ClientCommon.TaskInstance", b =>
@@ -185,18 +143,9 @@ namespace ClientCommon.Migrations
                         .WithMany("TaskItems")
                         .HasForeignKey("TaskInstanceId");
 
-                    b.HasOne("ClientCommon.TaskItemType", "TaskItemType")
+                    b.HasOne("ClientCommon.UIType", "UIType")
                         .WithMany("TaskItems")
-                        .HasForeignKey("TaskItemTypeId")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
-
-            modelBuilder.Entity("ClientCommon.Test", b =>
-                {
-                    b.HasOne("ClientCommon.User", "User")
-                        .WithMany("Tests")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("UITypeId");
                 });
 #pragma warning restore 612, 618
         }

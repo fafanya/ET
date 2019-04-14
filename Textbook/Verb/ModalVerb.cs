@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Textbook.Kernel;
 
 namespace Textbook
 {
@@ -10,47 +11,18 @@ namespace Textbook
         public const int mvWere = 23;
         public const int mvBeen = 24;
 
-        protected static List<ModalVerb> m_List;
-        public static IEnumerable<ModalVerb> List
+        public static ModalVerb Instance { get; } = new ModalVerb();
+
+        private ModalVerb()
         {
-            get
+            List = new Dictionary<int, LObject>
             {
-                if (m_List == null)
-                {
-                    m_List = new List<ModalVerb>();
-                    ModalVerb mv = new ModalVerb
-                    {
-                        Id = mvNone,
-                        Name = "-"
-                    };
-                    m_List.Add(mv);
-                    mv = new ModalVerb
-                    {
-                        Id = mvDo,
-                        Name = "Do"
-                    };
-                    m_List.Add(mv);
-                    mv = new ModalVerb
-                    {
-                        Id = mvWas,
-                        Name = "Was"
-                    };
-                    m_List.Add(mv);
-                    mv = new ModalVerb
-                    {
-                        Id = mvWere,
-                        Name = "Were"
-                    };
-                    m_List.Add(mv);
-                    mv = new ModalVerb
-                    {
-                        Id = mvBeen,
-                        Name = "Been"
-                    };
-                    m_List.Add(mv);
-                }
-                return m_List;
-            }
+                { mvNone, new LObject(mvNone, "-") },
+                { mvDo, new LObject(mvDo, "Do") },
+                { mvWas, new LObject(mvWas, "Was") },
+                { mvWere, new LObject(mvWere, "Were") },
+                { mvBeen, new LObject(mvBeen, "Been") }
+            };
         }
     }
 }

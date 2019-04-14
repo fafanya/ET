@@ -8,64 +8,16 @@ namespace ClientCommon.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "TaskItemTypes",
-                columns: table => new
-                {
-                    TaskItemTypeId = table.Column<int>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    Name = table.Column<string>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_TaskItemTypes", x => x.TaskItemTypeId);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "TaskTypes",
-                columns: table => new
-                {
-                    TaskTypeId = table.Column<int>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    Name = table.Column<string>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_TaskTypes", x => x.TaskTypeId);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Users",
-                columns: table => new
-                {
-                    UserId = table.Column<int>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    Name = table.Column<string>(nullable: true),
-                    Email = table.Column<string>(nullable: true),
-                    Password = table.Column<string>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Users", x => x.UserId);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Tasks",
                 columns: table => new
                 {
                     TaskId = table.Column<int>(nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    Text = table.Column<string>(nullable: true),
-                    TaskTypeId = table.Column<int>(nullable: false)
+                    Text = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Tasks", x => x.TaskId);
-                    table.ForeignKey(
-                        name: "FK_Tasks_TaskTypes_TaskTypeId",
-                        column: x => x.TaskTypeId,
-                        principalTable: "TaskTypes",
-                        principalColumn: "TaskTypeId",
-                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -76,17 +28,25 @@ namespace ClientCommon.Migrations
                         .Annotation("Sqlite:Autoincrement", true),
                     Header = table.Column<string>(nullable: true),
                     Date = table.Column<DateTime>(nullable: false),
-                    UserId = table.Column<int>(nullable: false)
+                    CorrectAnswerAmount = table.Column<int>(nullable: false),
+                    IncorrectAnswerAmount = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Tests", x => x.TestId);
-                    table.ForeignKey(
-                        name: "FK_Tests_Users_UserId",
-                        column: x => x.UserId,
-                        principalTable: "Users",
-                        principalColumn: "UserId",
-                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "UITypes",
+                columns: table => new
+                {
+                    UITypeId = table.Column<int>(nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Name = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UITypes", x => x.UITypeId);
                 });
 
             migrationBuilder.CreateTable(
@@ -97,7 +57,9 @@ namespace ClientCommon.Migrations
                         .Annotation("Sqlite:Autoincrement", true),
                     SeqNo = table.Column<int>(nullable: false),
                     TestId = table.Column<int>(nullable: false),
-                    TaskId = table.Column<int>(nullable: false)
+                    TaskId = table.Column<int>(nullable: false),
+                    CorrectAnswerAmount = table.Column<int>(nullable: false),
+                    IncorrectAnswerAmount = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -125,10 +87,11 @@ namespace ClientCommon.Migrations
                     SeqNo = table.Column<int>(nullable: false),
                     ValueInt = table.Column<int>(nullable: true),
                     ValueString = table.Column<string>(nullable: true),
+                    LangItemId = table.Column<int>(nullable: false),
                     TaskId = table.Column<int>(nullable: true),
                     TaskInstanceId = table.Column<int>(nullable: true),
                     ParentId = table.Column<int>(nullable: true),
-                    TaskItemTypeId = table.Column<int>(nullable: false)
+                    UITypeId = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -152,11 +115,11 @@ namespace ClientCommon.Migrations
                         principalColumn: "TaskInstanceId",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_TaskItems_TaskItemTypes_TaskItemTypeId",
-                        column: x => x.TaskItemTypeId,
-                        principalTable: "TaskItemTypes",
-                        principalColumn: "TaskItemTypeId",
-                        onDelete: ReferentialAction.Cascade);
+                        name: "FK_TaskItems_UITypes_UITypeId",
+                        column: x => x.UITypeId,
+                        principalTable: "UITypes",
+                        principalColumn: "UITypeId",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateIndex(
@@ -185,19 +148,9 @@ namespace ClientCommon.Migrations
                 column: "TaskInstanceId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_TaskItems_TaskItemTypeId",
+                name: "IX_TaskItems_UITypeId",
                 table: "TaskItems",
-                column: "TaskItemTypeId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Tasks_TaskTypeId",
-                table: "Tasks",
-                column: "TaskTypeId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Tests_UserId",
-                table: "Tests",
-                column: "UserId");
+                column: "UITypeId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -209,19 +162,13 @@ namespace ClientCommon.Migrations
                 name: "TaskInstances");
 
             migrationBuilder.DropTable(
-                name: "TaskItemTypes");
+                name: "UITypes");
 
             migrationBuilder.DropTable(
                 name: "Tasks");
 
             migrationBuilder.DropTable(
                 name: "Tests");
-
-            migrationBuilder.DropTable(
-                name: "TaskTypes");
-
-            migrationBuilder.DropTable(
-                name: "Users");
         }
     }
 }

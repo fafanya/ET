@@ -47,7 +47,7 @@ namespace ClientAndroid
             TextView tvTaskInstanceResult = view.FindViewById<TextView>(Resource.Id.tvTaskInstanceResult);
             RelativeLayout rlTaskInstanceResult = view.FindViewById<RelativeLayout>(Resource.Id.rlTaskInstanceResult);
 
-            tvTaskInstanceText.Text = taskInstance.Task.TaskType.Name;
+            tvTaskInstanceText.Text = "Дано:";
             tvTaskInstanceHeader.Text = taskInstance.Task.Text;
             tvTaskInstanceResult.Text = taskInstance.CorrectAnswerAmount.ToString()
                                 + "/"

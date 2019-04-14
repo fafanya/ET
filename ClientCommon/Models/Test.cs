@@ -15,11 +15,6 @@ namespace ClientCommon
         public DateTime Date { get; set; }
 
         [DataMember]
-        public int UserId { get; set; }
-        [DataMember]
-        public User User { get; set; }
-
-        [DataMember]
         public int CorrectAnswerAmount { get; set; }
         [DataMember]
         public int IncorrectAnswerAmount { get; set; }

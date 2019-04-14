@@ -2,25 +2,26 @@
 using Android.Views;
 using Android.Widget;
 using Textbook;
+using Textbook.Kernel;
 
 namespace ClientAndroid
 {
-    public class NotionalVerbListAdapter : BaseAdapter<NotionalVerb>
+    public class LObjectListAdapter : BaseAdapter<LObject>
     {
-        private NotionalVerb[] m_Items;
+        private LObject[] m_LObjects;
         private Activity m_Context;
 
-        public NotionalVerbListAdapter(Activity context, NotionalVerb[] items) : base()
+        public LObjectListAdapter(Activity context, LObject[] lObjects) : base()
         {
             m_Context = context;
-            m_Items = items;
+            m_LObjects = lObjects;
         }
 
-        public override NotionalVerb this[int position]
+        public override LObject this[int position]
         {
             get
             {
-                return m_Items[position];
+                return m_LObjects[position];
             }
         }
 
@@ -28,21 +29,21 @@ namespace ClientAndroid
         {
             get
             {
-                return m_Items.Length;
+                return m_LObjects.Length;
             }
         }
 
         public override long GetItemId(int position)
         {
-            return m_Items[position].Id;
+            return m_LObjects[position].Id;
         }
 
         public override View GetView(int position, View convertView, ViewGroup parent)
         {
             View view = convertView ?? m_Context.LayoutInflater.Inflate(Android.Resource.Layout.SimpleSpinnerDropDownItem, null);
-            NotionalVerb item = m_Items[position];
+            LObject verbTenses = m_LObjects[position];
             TextView tvText = view.FindViewById<TextView>(Android.Resource.Id.Text1);
-            tvText.Text = item.Name;
+            tvText.Text = verbTenses.Name;
             return view;
         }
     }

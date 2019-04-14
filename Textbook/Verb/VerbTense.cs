@@ -1,6 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
+using Textbook.Kernel;
 
 namespace Textbook
 {
@@ -15,47 +14,18 @@ namespace Textbook
         public const int vtFuture = 3;
         public const int vtFutureInThePast = 4;
 
-        protected static List<VerbTense> m_List;
-        public static IEnumerable<VerbTense> List
+        public static VerbTense Instance { get; } = new VerbTense();
+
+        private VerbTense()
         {
-            get
+            List = new Dictionary<int, LObject>
             {
-                if (m_List == null)
-                {
-                    m_List = new List<VerbTense>();
-                    VerbTense verbTense = new VerbTense
-                    {
-                        Id = vtNone,
-                        Name = "Не выбрано"
-                    };
-                    m_List.Add(verbTense);
-                    verbTense = new VerbTense
-                    {
-                        Id = vtPresent,
-                        Name = "Present"
-                    };
-                    m_List.Add(verbTense);
-                    verbTense = new VerbTense
-                    {
-                        Id = vtPast,
-                        Name = "Past"
-                    };
-                    m_List.Add(verbTense);
-                    verbTense = new VerbTense
-                    {
-                        Id = vtFuture,
-                        Name = "Future"
-                    };
-                    m_List.Add(verbTense);
-                    verbTense = new VerbTense
-                    {
-                        Id = vtFutureInThePast,
-                        Name = "Future In The Past"
-                    };
-                    m_List.Add(verbTense);
-                }
-                return m_List;
-            }
+                { vtNone, new LObject(vtNone, "Не выбрано") },
+                { vtPresent, new LObject(vtPresent, "Present") },
+                { vtPast, new LObject(vtPast, "Past") },
+                { vtFuture, new LObject(vtFuture, "Future") },
+                { vtFutureInThePast, new LObject(vtFutureInThePast, "Future In The Past") }
+            };
         }
     }
 }

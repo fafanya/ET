@@ -38,43 +38,50 @@ namespace ClientCommon
         {
             TaskItem parentTaskItem = new TaskItem
             {
-                TaskItemTypeId = taskItemTypeId,
-                TaskInstance = this
+                LangItemId = taskItemTypeId,
+                TaskInstance = this,
+                Children = new List<TaskItem>()
             };
+            TaskItem childTaskItem = new TaskItem
+            {
+                LangItemId = taskItemTypeId,
+            };
+            parentTaskItem.Children.Add(childTaskItem);
+
             if (valueInt != null)
             {
-                parentTaskItem.ValueInt = valueInt.Value;
+                childTaskItem.ValueInt = valueInt.Value;
             }
             else if (valueString != null)
             {
-                parentTaskItem.ValueString = valueString;
+                childTaskItem.ValueString = valueString;
             }
             else if (valuesInt != null)
             {
-                parentTaskItem.Children = new List<TaskItem>();
+                childTaskItem.Children = new List<TaskItem>();
                 for (int i = 0; i < valuesInt.Length; i++)
                 {
                     TaskItem taskItem = new TaskItem
                     {
-                        TaskItemTypeId = taskItemTypeId,
+                        LangItemId = taskItemTypeId,
                         ValueInt = valuesInt[i],
                         SeqNo = i + 1
                     };
-                    parentTaskItem.Children.Add(taskItem);
+                    childTaskItem.Children.Add(taskItem);
                 }
             }
             else if (valuesString != null)
             {
-                parentTaskItem.Children = new List<TaskItem>();
+                childTaskItem.Children = new List<TaskItem>();
                 for (int i = 0; i < valuesString.Length; i++)
                 {
                     TaskItem taskItem = new TaskItem
                     {
-                        TaskItemTypeId = taskItemTypeId,
+                        LangItemId = taskItemTypeId,
                         ValueString = valuesString[i],
                         SeqNo = i + 1
                     };
-                    parentTaskItem.Children.Add(taskItem);
+                    childTaskItem.Children.Add(taskItem);
                 }
             }
             TaskItems.Add(parentTaskItem);
@@ -92,13 +99,22 @@ namespace ClientCommon
 
         public bool CheckTaskItem(TaskItem taskItem)
         {
-            IEnumerable<TaskItem> correctTaskItems = Task.TaskItems.Where(x => x.TaskItemTypeId == taskItem.TaskItemTypeId);
-
-            foreach (TaskItem correctTaskItem in correctTaskItems)
+            TaskItem correctTaskItem = Task.TaskItems.FirstOrDefault(x => x.LangItemId == taskItem.LangItemId);
+            if (correctTaskItem != null)
             {
-                if (IsCorrect(taskItem, correctTaskItem))
+                foreach (TaskItem correctVariant in correctTaskItem.Children)
                 {
-                    return true;
+                    if (taskItem.Children != null)
+                    {
+                        TaskItem child = taskItem.Children.FirstOrDefault();
+                        if (child != null)
+                        {
+                            if (IsCorrect(child, correctVariant))
+                            {
+                                return true;
+                            }
+                        }
+                    }
                 }
             }
             return false;
@@ -106,7 +122,7 @@ namespace ClientCommon
 
         private static bool IsCorrect(TaskItem tiAnswer, TaskItem tiCorrect)
         {
-            if (tiAnswer.TaskItemTypeId == tiCorrect.TaskItemTypeId &&
+            if (tiAnswer.LangItemId == tiCorrect.LangItemId &&
                 tiAnswer.ValueInt == tiCorrect.ValueInt &&
                 tiAnswer.ValueString == tiCorrect.ValueString)
             {
@@ -123,6 +139,11 @@ namespace ClientCommon
                         tiCorrect.Children.Count == 0)
                 {
                     return true;
+                }
+                else if (tiAnswer.Children != null && tiCorrect.Children == null &&
+                        tiAnswer.Children.Count != 0)
+                {
+                    return false;
                 }
                 else if (tiAnswer.Children != null && tiCorrect != null &&
                         tiAnswer.Children.Count == tiCorrect.Children.Count)
