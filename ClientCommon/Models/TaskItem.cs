@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 using System.ComponentModel.DataAnnotations.Schema;
-using Textbook;
 using Textbook.Kernel;
 using Textbook.Language;
 
@@ -73,32 +72,34 @@ namespace ClientCommon
 
         private string GetNameByValueInt()
         {
-            string result = string.Empty;
             if (ValueInt.HasValue)
             {
-                if (LangItemId == Lib.lTense)
-                {
-                    result = Lib.Instance.List[Lib.lTense].Data[ValueInt.Value].Name;
-                }
-                else if (LangItemId == Lib.lAspect)
-                {
-                    result = Lib.Instance.List[Lib.lAspect].Data[ValueInt.Value].Name;
-                }
-                else if (LangItemId == Lib.lSentencePart)
-                {
-                    result = GetSentencePartNameByValueInt(ValueInt.Value);
-                }
+                return GetNameByValueInt(LangItemId, ValueInt.Value);
             }
-            return result;
+            return string.Empty;
         }
 
-        public static string GetSentencePartNameByValueInt(int valueInt)
+        public static string GetNameByValueInt(int langItemId, int valueInt)
         {
             List<LObject> lObjects = new List<LObject>();
-            lObjects.AddRange(Lib.Instance.List[Lib.lSentencePart].Data.Values);
-            lObjects.AddRange(ModalVerb.Instance.List.Values);
-            lObjects.AddRange(NotionalVerb.Instance.List.Values);
+            GetLangItemEnum(Lib.Instance.List[langItemId].Data, lObjects);
             return lObjects.First(x => x.Id == valueInt).Name;
+        }
+
+        private static void GetLangItemEnum(Dictionary<int, LObject> data, List<LObject> result)
+        {
+            var langItemEnum = data.Values;
+            foreach(var langItem in langItemEnum)
+            {
+                if (langItem.Data == null)
+                {
+                    result.Add(langItem);
+                }
+                else
+                {
+                    GetLangItemEnum(langItem.Data, result);
+                }
+            }
         }
 
         public string Header

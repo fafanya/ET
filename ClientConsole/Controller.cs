@@ -212,7 +212,7 @@ namespace ClientConsole
             bool isContinue = true;
             while (isContinue)
             {
-                Console.WriteLine("Текущая формула: " + GetFormula(valuesInt));
+                Console.WriteLine("Текущая формула: " + GetFormula(taskItem.LangItemId, valuesInt));
                 bool isValid = false;
                 string output = null;
                 while (!isValid)
@@ -245,6 +245,7 @@ namespace ClientConsole
             }
             return valuesInt.ToArray();
         }
+
         private static int RunSelect(Dictionary<int, LObject> lObjects)
         {
             int spSeqNo = 0;
@@ -281,13 +282,12 @@ namespace ClientConsole
                 return RunSelect(sItem.Data);
             }
         }
-
-        private static string GetFormula(IEnumerable<int> formulaItemIdList)
+        private static string GetFormula(int langItemId, IEnumerable<int> valuesInt)
         {
             List<string> formulaItemNameList = new List<string>();
-            foreach (int formulaItemId in formulaItemIdList)
+            foreach (int valueInt in valuesInt)
             {
-                string formulaItemName = TaskItem.GetSentencePartNameByValueInt(formulaItemId);
+                string formulaItemName = TaskItem.GetNameByValueInt(langItemId, valueInt);
                 formulaItemNameList.Add(formulaItemName);
             }
 

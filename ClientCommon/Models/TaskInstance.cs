@@ -30,7 +30,7 @@ namespace ClientCommon
         [DataMember]
         public ICollection<TaskItem> TaskItems { get; set; }
 
-        public bool AddAnswer(int taskItemTypeId,
+        public bool AddAnswer(int langItemId,
             int? valueInt = null,
             string valueString = null,
             int[] valuesInt = null,
@@ -38,13 +38,13 @@ namespace ClientCommon
         {
             TaskItem parentTaskItem = new TaskItem
             {
-                LangItemId = taskItemTypeId,
+                LangItemId = langItemId,
                 TaskInstance = this,
                 Children = new List<TaskItem>()
             };
             TaskItem childTaskItem = new TaskItem
             {
-                LangItemId = taskItemTypeId,
+                LangItemId = langItemId,
             };
             parentTaskItem.Children.Add(childTaskItem);
 
@@ -63,7 +63,7 @@ namespace ClientCommon
                 {
                     TaskItem taskItem = new TaskItem
                     {
-                        LangItemId = taskItemTypeId,
+                        LangItemId = langItemId,
                         ValueInt = valuesInt[i],
                         SeqNo = i + 1
                     };
@@ -77,7 +77,7 @@ namespace ClientCommon
                 {
                     TaskItem taskItem = new TaskItem
                     {
-                        LangItemId = taskItemTypeId,
+                        LangItemId = langItemId,
                         ValueString = valuesString[i],
                         SeqNo = i + 1
                     };
