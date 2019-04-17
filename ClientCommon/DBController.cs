@@ -117,10 +117,18 @@ namespace ClientCommon
 
         public IEnumerable<Test> GetTests()
         {
-            using (var db = new ClientDBContext())
+            try
             {
-                return db.Tests.ToList();
+                using (var db = new ClientDBContext())
+                {
+                    return db.Tests.ToList();
+                }
             }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            return null;
         }
 
         public IEnumerable<TaskInstance> GetTaskInstancesByTestId(int testId)
@@ -194,10 +202,17 @@ namespace ClientCommon
 
         public void DeleteTest(Test test)
         {
-            using (var db = new ClientDBContext())
+            try
             {
-                db.Tests.Remove(test);
-                db.SaveChanges();
+                using (var db = new ClientDBContext())
+                {
+                    db.Tests.Remove(test);
+                    db.SaveChanges();
+                }
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine(ex.Message);
             }
         }
 

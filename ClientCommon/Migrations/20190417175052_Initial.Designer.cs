@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ClientCommon.Migrations
 {
     [DbContext(typeof(ClientDBContext))]
-    [Migration("20190414185350_Initial")]
+    [Migration("20190417175052_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -135,7 +135,8 @@ namespace ClientCommon.Migrations
                 {
                     b.HasOne("ClientCommon.TaskItem", "Parent")
                         .WithMany("Children")
-                        .HasForeignKey("ParentId");
+                        .HasForeignKey("ParentId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("ClientCommon.Task", "Task")
                         .WithMany("TaskItems")
@@ -143,7 +144,8 @@ namespace ClientCommon.Migrations
 
                     b.HasOne("ClientCommon.TaskInstance", "TaskInstance")
                         .WithMany("TaskItems")
-                        .HasForeignKey("TaskInstanceId");
+                        .HasForeignKey("TaskInstanceId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("ClientCommon.UIType", "UIType")
                         .WithMany("TaskItems")

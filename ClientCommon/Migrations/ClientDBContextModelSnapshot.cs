@@ -133,7 +133,8 @@ namespace ClientCommon.Migrations
                 {
                     b.HasOne("ClientCommon.TaskItem", "Parent")
                         .WithMany("Children")
-                        .HasForeignKey("ParentId");
+                        .HasForeignKey("ParentId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("ClientCommon.Task", "Task")
                         .WithMany("TaskItems")
@@ -141,7 +142,8 @@ namespace ClientCommon.Migrations
 
                     b.HasOne("ClientCommon.TaskInstance", "TaskInstance")
                         .WithMany("TaskItems")
-                        .HasForeignKey("TaskInstanceId");
+                        .HasForeignKey("TaskInstanceId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("ClientCommon.UIType", "UIType")
                         .WithMany("TaskItems")

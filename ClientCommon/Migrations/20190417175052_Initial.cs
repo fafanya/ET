@@ -101,7 +101,7 @@ namespace ClientCommon.Migrations
                         column: x => x.ParentId,
                         principalTable: "TaskItems",
                         principalColumn: "TaskItemId",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_TaskItems_Tasks_TaskId",
                         column: x => x.TaskId,
@@ -113,7 +113,7 @@ namespace ClientCommon.Migrations
                         column: x => x.TaskInstanceId,
                         principalTable: "TaskInstances",
                         principalColumn: "TaskInstanceId",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_TaskItems_UITypes_UITypeId",
                         column: x => x.UITypeId,

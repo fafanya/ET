@@ -26,5 +26,27 @@ namespace ClientCommon
         {
             optionsBuilder.UseSqlite($"Filename={DatabasePath}");
         }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+            modelBuilder.
+                Entity<TaskInstance>().
+                HasOne(ti => ti.Test).
+                WithMany(t => t.TaskInstances).
+                OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.
+                Entity<TaskItem>().
+                HasOne(ti => ti.TaskInstance).
+                WithMany(t => t.TaskItems).
+                OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.
+                Entity<TaskItem>().
+                HasOne(ti => ti.Parent).
+                WithMany(t => t.Children).
+                OnDelete(DeleteBehavior.Cascade);
+        }
     }
 }

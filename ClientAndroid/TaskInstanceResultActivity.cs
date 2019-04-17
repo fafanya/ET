@@ -22,7 +22,7 @@ namespace ClientAndroid
             base.OnCreate(savedInstanceState);
             SetContentView(Resource.Layout.activity_task_instance_result);
 
-            Button btnTaskInstanceRule = FindViewById<Button>(Resource.Id.btnTaskInstanceRule);
+            Button btnTaskInstanceRule = FindViewById<Button>(Resource.Id.btnTaskInstanceResultRule);
             btnTaskInstanceRule.Click += BtnTaskInstanceRule_Click;
             // Create your application here
             InitTaskInstace();
