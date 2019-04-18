@@ -69,6 +69,7 @@
     <Compile Include="RuleListActivity.cs" />
     <Compile Include="StatisticActivity.cs" />
     <Compile Include="TaskActivity.cs" />
+    <Compile Include="TaskInstanceActivity.cs" />
     <Compile Include="TaskInstanceResultActivity.cs" />
     <Compile Include="TestActivity.cs" />
     <Compile Include="TestResultActivity.cs" />
@@ -189,6 +190,11 @@
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\layout\activity_rule.axml">
+      <SubType>Designer</SubType>
+    </AndroidResource>
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\layout\activity_task_instance.axml">
       <SubType>Designer</SubType>
     </AndroidResource>
   </ItemGroup>
