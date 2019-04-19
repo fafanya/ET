@@ -78,7 +78,7 @@ namespace ClientAndroid
             {
                 TaskInstance task = m_TaskEnumerator.Current;
                 Intent intent = new Intent(this, typeof(TaskActivity));
-                intent.PutExtra("A_TASK_ID", task.TaskInstanceId);
+                intent.PutExtra("TASK_INSTANCE_ID", task.TaskInstanceId);
                 StartActivityForResult(intent, task.TaskInstanceId);
             }
             return isContinue;

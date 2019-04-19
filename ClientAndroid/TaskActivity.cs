@@ -64,7 +64,7 @@ namespace ClientAndroid
 
         private void InitTaskInstance()
         {
-            int taskInstanceId = Intent.GetIntExtra("A_TASK_ID", 0);
+            int taskInstanceId = Intent.GetIntExtra("TASK_INSTANCE_ID", 0);
             if (taskInstanceId != 0)
             {
                 m_TaskInstance = DBController.Instance.GetTaskInstance(taskInstanceId);
